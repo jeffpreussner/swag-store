@@ -2,11 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { Suspense } from "react";
-import { fetchFeaturedProducts } from "@/lib/products";
+import { fetchFeaturedProducts, fetchActivePromo} from "@/lib/products";
 import { Product } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Metadata } from "next";
-import heroImg from "@/public/img/1200x400-grayscale.jpg"
+import heroImg from "@/public/img/1200x400-grayscale.jpg";
+
 export const metadata: Metadata = {
   title: 'Acme Swag - Home',
   description: 'Acme Swag Homepage is the place to find the latest and greatest swaggy stuff!',
@@ -17,8 +18,17 @@ export const metadata: Metadata = {
 };
 
 export default async function MarketingPage() {
+  // both promises can be awaited in parallel
+  const promoPromise = fetchActivePromo();
+  const featuredPromise = fetchFeaturedProducts();
+  
   return (
     <div>
+      <div className="h-20 md:h-10 bg-secondary">
+        <Suspense fallback={<Skeleton className="h-20 md:h-10 w-full" />}>
+          <ActivePromotion promoPromise={promoPromise} />
+        </Suspense>
+      </div>
       <div className="bg-secondary text-secondary-foreground">
         <div className="pt-20 pb-10 px-4 text-center gap-6 flex flex-col items-center max-w-3xl mx-auto">
           <h1 className="text-6xl md:text-9xl font-bold mb-4">
@@ -47,7 +57,7 @@ export default async function MarketingPage() {
         <h2 className="text-center text-3xl md:text-4xl">
           Featured Products
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
           {/* broke out FeaturedProducts into its own component so we can suspense it */}
           <Suspense
             fallback={
@@ -61,16 +71,24 @@ export default async function MarketingPage() {
               </>
             }
           >
-            <FeaturedProducts />
+            <FeaturedProducts featuredPromise={featuredPromise} />
           </Suspense>
         </div>
       </div>
     </div>
   );
 }
+async function ActivePromotion({ promoPromise }: { promoPromise: ReturnType<typeof fetchActivePromo> }){
+    const response = await promoPromise;
+  if (!response?.data || !response.data.active ) return null;
+  return <div className="h-full text-center p-4 box bg-primary text-primary-foreground flex items-center justify-center">
+    <p>{response?.data?.title && <> {response.data.title} - </>}{response?.data?.description && response?.data?.description}{response.data.code && <> code: <strong>{response.data.code}</strong></>}</p>
+  </div>
 
-async function FeaturedProducts() {
-  const response = await fetchFeaturedProducts();
+}
+
+async function FeaturedProducts({ featuredPromise }: { featuredPromise: ReturnType<typeof fetchFeaturedProducts> }) {
+  const response = await featuredPromise;
   if (!response?.data?.length)
     return (
       <p className="text-center text-lg mx-auto col-span-3">

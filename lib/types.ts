@@ -24,6 +24,7 @@ export type ProductResponse = {
 }
 
 export type ProductStock = {
+    success: boolean,
     data:{
         productId:string,
         stock:number,
@@ -31,4 +32,29 @@ export type ProductStock = {
         lowStock:boolean
     }
 }
+export type ActivePromoResponse = {
+  success: boolean,
+  data: {
+    id: string,
+    title: string,
+    description: string,
+    discountPercent: number,
+    code: string,
+    validFrom: string,
+    validUntil: string,
+    active: boolean
+  }
+}
 
+export type CartContentsResponse = {
+  "success": boolean,
+  "data": {
+    "token": string,
+    "items": Product[],
+    "totalItems": number,
+    "subtotal": number,
+    "currency": string,
+    "createdAt": string,
+    "updatedAt": string
+  }
+}

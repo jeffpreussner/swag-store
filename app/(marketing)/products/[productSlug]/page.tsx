@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Suspense } from "react";
 import { fetchProduct, fetchStock } from "@/lib/products";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -113,18 +113,20 @@ async function ProductDetails({
             <CarouselNext />
           </Carousel>
         )}
+
         <div className="flex flex-col gap-6">
           <h1 className="text-3xl md:text-5xl font-bold">{data.name}</h1>
           <p className="text-gray-600 text-lg md:text-xl">{data.description}</p>
           <p className="font-semibold">${data.price}</p>
           <p className="text-gray-500"></p>
           <div className="flex justify-center items-center gap-4">
+
              {stock?.inStock ? (
               <>
-                <p>{stock.stock} in Stock:</p> <AddToCartButton product={data.id} />
+                <p>{stock?.stock} in Stock:</p> <AddToCartButton product={data.id} max={stock?.stock} />
               </>
             ) : (
-              <p>Out of Stock</p>
+              <Button disabled={true}>Out of Stock</Button>
             )}
             {stock?.lowStock && (
               <p className="text-yellow-500">Low Stock order now!</p>

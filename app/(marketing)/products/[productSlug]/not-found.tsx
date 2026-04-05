@@ -4,7 +4,7 @@ export default function productNotFound() {
   return (
     <div className="container">
       <h1>404</h1>
-      <p  >Product Not Found</p>
+      <p>Product Not Found</p>
       <p>
         The product you&apos;re looking for doesn&apos;t exist or has been moved.
       </p>
