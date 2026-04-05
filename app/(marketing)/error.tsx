@@ -1,10 +1,7 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { Suspense } from "react";
-import { fetchFeaturedProducts } from "@/lib/products";
-import { Product } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Metadata } from "next";
 import { BackButton } from "@/components/ui/custom/back-button";

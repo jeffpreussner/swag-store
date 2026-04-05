@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { Suspense } from "react";
-import { fetchFeaturedProducts, fetchActivePromo } from "@/lib/products";
+import { fetchProducts, fetchActivePromo } from "@/lib/products";
 import { Product } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Metadata } from "next";
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default async function MarketingPage() {
   // both promises can be awaited in parallel
   const promoPromise = fetchActivePromo();
-  const featuredPromise = fetchFeaturedProducts();
+  const featuredPromise = fetchProducts(true);
 
   return (
     <div>
@@ -103,7 +103,7 @@ async function ActivePromotion({
 async function FeaturedProducts({
   featuredPromise,
 }: {
-  featuredPromise: ReturnType<typeof fetchFeaturedProducts>;
+  featuredPromise: ReturnType<typeof fetchProducts>;
 }) {
   const response = await featuredPromise;
   if (!response?.data?.length)

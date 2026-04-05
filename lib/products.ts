@@ -7,15 +7,15 @@ import {
   CartContentsResponse,
 } from "@/lib/types";
 
-// fetch featured products from our API
-export async function fetchFeaturedProducts(): Promise<FeaturedProductData | null> {
+// fetch products from our API
+export async function fetchProducts(featured:boolean): Promise<FeaturedProductData | null> {
   // fetch featured products from our API endpoint
   "use cache";
   cacheTag("featured-products");
   cacheLife("days");
-  //this is a server component, its safe i swear :)
+
   const res = await fetch(
-    "https://vercel-swag-store-api.vercel.app/api/products?featured=true",
+    `https://vercel-swag-store-api.vercel.app/api/products?featured=${String(featured)}`,
     {
       headers: {
         "x-vercel-protection-bypass": process.env.SWAG_STORE_API_KEY || "",
