@@ -78,7 +78,7 @@ async function ProductDetails({
           href="/products"
           className={buttonVariants({ variant: "ghost", size: "lg" })}
         >
-         <ChevronLeft  /> Back to Products
+          <ChevronLeft /> Back to Products
         </Link>
       </div>
       <div className="text-center text-lg mx-auto col-span-3 max-w-md mx-auto p-4">
@@ -120,10 +120,10 @@ async function ProductDetails({
           <p className="font-semibold">${data.price}</p>
           <p className="text-gray-500"></p>
           <div className="flex justify-center items-center gap-4">
-
-             {stock?.inStock ? (
+            {stock?.inStock ? (
               <>
-                <p>{stock?.stock} in Stock:</p> <AddToCartButton product={data.id} max={stock?.stock} />
+                <p>{stock?.stock} in Stock:</p>{" "}
+                <AddToCartButton product={data.id} max={stock?.stock} />
               </>
             ) : (
               <Button disabled={true}>Out of Stock</Button>

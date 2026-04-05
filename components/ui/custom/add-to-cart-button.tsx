@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export function AddToCartButton({
   product,
@@ -15,7 +15,7 @@ export function AddToCartButton({
 }) {
   const [count, setCount] = useState(1);
   const [loading, setLoading] = useState(false);
-const router = useRouter();
+  const router = useRouter();
 
   function updateCount(e: React.ChangeEvent<HTMLInputElement>) {
     setCount(Number(e.target.value));
@@ -47,8 +47,8 @@ const router = useRouter();
               <Link className={buttonVariants()} href="/cart">
                 view cart
               </Link>
-            </div> 
-          </div>
+            </div>
+          </div>,
         );
         router.refresh();
         return;

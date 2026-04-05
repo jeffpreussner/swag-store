@@ -1,12 +1,13 @@
-import Link from 'next/link'
- 
+import Link from "next/link";
+
 export default function productNotFound() {
   return (
     <div className="container">
       <h1>404</h1>
       <p>Product Not Found</p>
       <p>
-        The product you&apos;re looking for doesn&apos;t exist or has been moved.
+        The product you&apos;re looking for doesn&apos;t exist or has been
+        moved.
       </p>
       <Link
         href="/"
@@ -14,12 +15,12 @@ export default function productNotFound() {
       >
         Back to products
       </Link>
-        <Link
+      <Link
         href="/"
         className="rounded bg-gray-900 px-6 py-3 font-medium text-white hover:bg-gray-800"
       >
         Head home
       </Link>
     </div>
-  )
+  );
 }

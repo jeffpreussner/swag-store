@@ -1,5 +1,11 @@
 import { cacheTag, cacheLife } from "next/cache";
-import { FeaturedProductData, ProductResponse, ProductStock, ActivePromoResponse,CartContentsResponse } from "@/lib/types";
+import {
+  FeaturedProductData,
+  ProductResponse,
+  ProductStock,
+  ActivePromoResponse,
+  CartContentsResponse,
+} from "@/lib/types";
 
 // fetch featured products from our API
 export async function fetchFeaturedProducts(): Promise<FeaturedProductData | null> {
@@ -53,7 +59,9 @@ export async function fetchActivePromo(): Promise<ActivePromoResponse | null> {
   return data;
 }
 
-export async function fetchProduct(productSlug:string): Promise<ProductResponse | null> {
+export async function fetchProduct(
+  productSlug: string,
+): Promise<ProductResponse | null> {
   // fetch featured products from our API endpoint
   "use cache";
   cacheTag("product");
@@ -67,20 +75,19 @@ export async function fetchProduct(productSlug:string): Promise<ProductResponse 
       },
     },
   );
-  
+
   //add throw error if fetch fails
   if (!res.ok) {
-    throw new Error(
-      `Failed to fetch product: ${res.status} ${res.statusText}`,
-    );
+    throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}`);
   }
 
   const data = await res.json();
   return data;
 }
 
-
-export async function fetchStock(productSlug:string): Promise<ProductStock | null> {
+export async function fetchStock(
+  productSlug: string,
+): Promise<ProductStock | null> {
   // fetch featured products from our API endpoint
   "use cache";
   cacheTag("productStock");
@@ -94,43 +101,36 @@ export async function fetchStock(productSlug:string): Promise<ProductStock | nul
       },
     },
   );
-  
+
   //add throw error if fetch fails
   if (!res.ok) {
-    throw new Error(
-      `Failed to fetch stock: ${res.status} ${res.statusText}`,
-    );
+    throw new Error(`Failed to fetch stock: ${res.status} ${res.statusText}`);
   }
 
   const data = await res.json();
   return data;
 }
 
-
-export async function fetchCart(cartToken: string | undefined): Promise<CartContentsResponse | null> {
+export async function fetchCart(
+  cartToken: string | undefined,
+): Promise<CartContentsResponse | null> {
   // fetch featured products from our API endpoint
   "use cache";
   cacheTag("productStock");
   cacheLife("days");
-if (!cartToken) return null;
-  const res = await fetch(
-    `https://vercel-swag-store-api.vercel.app/api/cart`,
-    {
-      headers: {
-        "x-vercel-protection-bypass": process.env.SWAG_STORE_API_KEY || "",
-        "x-cart-token": cartToken || "",
-      },
+  if (!cartToken) return null;
+  const res = await fetch(`https://vercel-swag-store-api.vercel.app/api/cart`, {
+    headers: {
+      "x-vercel-protection-bypass": process.env.SWAG_STORE_API_KEY || "",
+      "x-cart-token": cartToken || "",
     },
-  );
-  
+  });
+
   //add throw error if fetch fails
   if (!res.ok) {
-    throw new Error(
-      `Failed to fetch cart: ${res.status} ${res.statusText}`,
-    );
+    throw new Error(`Failed to fetch cart: ${res.status} ${res.statusText}`);
   }
 
   const data = await res.json();
   return data;
 }
- 

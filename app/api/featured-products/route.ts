@@ -5,7 +5,7 @@ export async function GET() {
     "https://vercel-swag-store-api.vercel.app/api/products?featured=true",
     {
       headers: {
-        "x-vercel-protection-bypass": process.env.SWAG_STORE_API_KEY||"",
+        "x-vercel-protection-bypass": process.env.SWAG_STORE_API_KEY || "",
       },
     },
   );
