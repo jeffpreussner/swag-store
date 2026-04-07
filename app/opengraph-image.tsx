@@ -2,7 +2,6 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-// Image metadata
 export const alt = "Acme Swag Store";
 export const size = {
   width: 1200,
@@ -11,29 +10,24 @@ export const size = {
 
 export const contentType = "image/png";
 
-// Image generation
 export default async function Image() {
-  // Font loading, process.cwd() is Next.js project directory
   const robotoSlabSemiBold = await readFile(
     join(process.cwd(), "public/font/RobotoSlab-SemiBold.ttf"),
   );
-
   return new ImageResponse(
-    // ImageResponse JSX element
     <div
       style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         fontSize: 128,
         background: "white",
         width: "100%",
         height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
       }}
     >
       Acme Swag Store
     </div>,
-    // ImageResponse options
     {
       ...size,
       fonts: [

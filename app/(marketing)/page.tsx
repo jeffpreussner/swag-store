@@ -9,13 +9,9 @@ import type { Metadata } from "next";
 import heroImg from "@/public/img/1200x400-grayscale.jpg";
 
 export const metadata: Metadata = {
-  title: "Acme Swag - Home",
+  title: "Home",
   description:
     "Acme Swag Homepage is the place to find the latest and greatest swaggy stuff!",
-  openGraph: {
-    title: "Acme Swag - Home",
-    description: "Your one-stop shop for all swaggy stuff!",
-  },
 };
 
 export default async function MarketingPage() {

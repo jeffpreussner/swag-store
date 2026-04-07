@@ -23,7 +23,7 @@ export function AddToCartButton({
   async function addToCart(product: string) {
     try {
       setLoading(true);
-      const res = await fetch("/api/add-to-cart", {
+      const res = await fetch("/api/cart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +73,7 @@ export function AddToCartButton({
       <Button
         className="cursor-pointer"
         onClick={() => addToCart(product)}
-        disabled={loading ?? "disabled"}
+        disabled={loading}
       >
         {loading ? "Loading..." : "Add to Cart"}
       </Button>

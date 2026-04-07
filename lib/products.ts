@@ -7,9 +7,9 @@ import {
   CartContentsResponse,
 } from "@/lib/types";
 
-// fetch products from our API
-export async function fetchProducts(featured:boolean): Promise<FeaturedProductData | null> {
-  // fetch featured products from our API endpoint
+export async function fetchProducts(
+  featured: boolean,
+): Promise<FeaturedProductData | null> {
   "use cache";
   cacheTag("featured-products");
   cacheLife("days");
@@ -22,7 +22,6 @@ export async function fetchProducts(featured:boolean): Promise<FeaturedProductDa
       },
     },
   );
-  //add throw error if fetch fails
   if (!res.ok) {
     throw new Error(
       `Failed to fetch featured products: ${res.status} ${res.statusText}`,
@@ -34,7 +33,6 @@ export async function fetchProducts(featured:boolean): Promise<FeaturedProductDa
 }
 
 export async function fetchActivePromo(): Promise<ActivePromoResponse | null> {
-  // fetch featured products from our API endpoint
   "use cache";
   cacheTag("featured-products");
   cacheLife("days");
@@ -48,7 +46,6 @@ export async function fetchActivePromo(): Promise<ActivePromoResponse | null> {
       },
     },
   );
-  //add throw error if fetch fails
   if (!res.ok) {
     throw new Error(
       `Failed to fetch featured products: ${res.status} ${res.statusText}`,
@@ -62,7 +59,6 @@ export async function fetchActivePromo(): Promise<ActivePromoResponse | null> {
 export async function fetchProduct(
   productSlug: string,
 ): Promise<ProductResponse | null> {
-  // fetch featured products from our API endpoint
   "use cache";
   cacheTag("product");
   cacheLife("days");
@@ -76,7 +72,6 @@ export async function fetchProduct(
     },
   );
 
-  //add throw error if fetch fails
   if (!res.ok) {
     throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}`);
   }
@@ -88,10 +83,9 @@ export async function fetchProduct(
 export async function fetchStock(
   productSlug: string,
 ): Promise<ProductStock | null> {
-  // fetch featured products from our API endpoint
   "use cache";
   cacheTag("productStock");
-  cacheLife("days");
+  cacheLife("minutes");
 
   const res = await fetch(
     `https://vercel-swag-store-api.vercel.app/api/products/${productSlug}/stock`,
@@ -102,7 +96,6 @@ export async function fetchStock(
     },
   );
 
-  //add throw error if fetch fails
   if (!res.ok) {
     throw new Error(`Failed to fetch stock: ${res.status} ${res.statusText}`);
   }
@@ -114,7 +107,6 @@ export async function fetchStock(
 export async function fetchCart(
   cartToken: string | undefined,
 ): Promise<CartContentsResponse | null> {
-  // fetch featured products from our API endpoint
   "use cache";
   cacheTag("productStock");
   cacheLife("days");
@@ -126,7 +118,6 @@ export async function fetchCart(
     },
   });
 
-  //add throw error if fetch fails
   if (!res.ok) {
     throw new Error(`Failed to fetch cart: ${res.status} ${res.statusText}`);
   }

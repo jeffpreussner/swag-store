@@ -1,3 +1,4 @@
+import { LoadMoreButton } from "@/components/ui/custom/load-more-button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchProducts } from "@/lib/products";
 import { Product } from "@/lib/types";
@@ -7,13 +8,9 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Acme Swag - Products",
+  title: "Products",
   description:
     "Acme Swag Products page is the place to find the latest and greatest swaggy stuff!",
-  openGraph: {
-    title: "Acme Swag - Products",
-    description: "Your one-stop shop for all swaggy stuff!",
-  },
 };
 
 export default async function ProductPage() {
@@ -27,23 +24,43 @@ export default async function ProductPage() {
       <p className="text-center text-lg mb-10">
         Browse our collection of the latest and greatest swaggy stuff!
       </p>
-            <div className="max-w-5xl mx-auto py-10 px-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
-          {/* broke out FeaturedProducts into its own component so we can suspense it */}
-          <Suspense
-            fallback={
-              <>
-                <Skeleton className="h-64 w-full" />
-                <Skeleton className="h-64 w-full" />
-                <Skeleton className="h-64 w-full" />
-                <Skeleton className="h-64 w-full" />
-                <Skeleton className="h-64 w-full" />
-                <Skeleton className="h-64 w-full" />
-              </>
-            }
-          >
-            <Products featuredPromise={featuredPromise} />
-          </Suspense>
+      <div className="max-w-5xl mx-auto py-10 px-4">
+        <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
+            {/* broke out FeaturedProducts into its own component so we can suspense it */}
+            <Suspense
+              fallback={
+                <>
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                  <Skeleton className="h-64 w-full" />
+                </>
+              }
+            >
+              <Products featuredPromise={featuredPromise} />
+            </Suspense>
+          </div>
+          <div className="text-center mt-10">
+            <LoadMoreButton />
+          </div>
         </div>
       </div>
     </div>
@@ -80,7 +97,9 @@ async function Products({
           />
           <h3 className="text-xl font-bold mt-4">{product.name}</h3>
           <p className="mt-2">{product.description}</p>
-          <p className="mt-2 font-semibold">${product.price}</p>
+          <p className="mt-2 font-semibold">
+            ${product.price.toLocaleString()}
+          </p>
         </Link>
       ))}
     </>

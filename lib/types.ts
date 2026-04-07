@@ -50,11 +50,20 @@ export type CartContentsResponse = {
   success: boolean;
   data: {
     token: string;
-    items: Product[];
+    items: CartItem[];
     totalItems: number;
     subtotal: number;
     currency: string;
     createdAt: string;
     updatedAt: string;
   };
+};
+
+export type CartItem = {
+  productId: string;
+  quantity: number;
+  addedAt: string;
+  product: Product;
+  lineTotal: number;
+  stock?: number;
 };

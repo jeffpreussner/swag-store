@@ -10,16 +10,29 @@ const robotoSlabHeading = Roboto_Slab({
 const roboto = Roboto({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3001",
+  ),
   title: {
     template: "%s | Acme Swag Store",
     default: "Acme Swag Store",
   },
   description: "Your one-stop shop for swaggy stuff!",
   openGraph: {
+    siteName: "Acme Swag Store",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
     title: "Acme Swag Store",
     description: "Your one-stop shop for all swaggy stuff!",
   },
 };
+
+import "./globals.css";
 
 export default function RootLayout({
   children,

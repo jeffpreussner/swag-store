@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { fetchProduct, fetchStock } from "@/lib/products";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Metadata } from "next";
+
 import {
   Carousel,
   CarouselContent,
@@ -12,19 +13,44 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+
 import { AddToCartButton } from "@/components/ui/custom/add-to-cart-button";
 import { ChevronLeft } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Acme Swag - Products",
-  description:
-    "Acme Swag Products page is the place to find the latest and greatest swaggy stuff!",
-  openGraph: {
-    title: "Acme Swag - Products",
-    description: "Your one-stop shop for all swaggy stuff!",
-  },
-};
+export async function generateMetadata(props: {
+  params: Promise<{ productSlug: string }>;
+}): Promise<Metadata> {
+  const productSlug = (await props.params).productSlug;
+  const productRes = await fetchProduct(productSlug);
+  const data = productRes?.data;
+  if (!data) {
+    return {
+      title: "Acme Swag Store - Product Detail (product not found)",
+      description: "Detail view of swaggy stuff!",
+    };
+  }
 
+  return {
+    title: data.name,
+    description: data.description,
+    keywords: data.tags?.join(", "),
+    alternates: {
+      canonical: `/${productSlug}`,
+    },
+    openGraph: {
+      title: data.name,
+      description: data.description,
+      images: data.images,
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: data.name,
+      description: data.description,
+      images: data.images,
+    },
+  };
+}
 export default async function ProductDetailPage(props: {
   params: Promise<{ productSlug: string }>;
 }) {
