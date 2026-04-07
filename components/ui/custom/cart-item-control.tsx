@@ -1,7 +1,6 @@
 "use client";
-import Link from "next/link";
 import { useState } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -17,17 +16,19 @@ export function CartItemControl({
   maxQuantity: number;
 }) {
   const [count, setCount] = useState(cartItem.quantity);
-  const [loading, setLoading] = useState(false);
+  const [removeLoading, setRemoveLoading] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
+
   const router = useRouter();
 
   function updateCount(e: React.ChangeEvent<HTMLInputElement>) {
     setCount(Number(e.target.value));
   }
   async function removeFromCart(productId: string) {
-    const previousCount = count; // save for rollback
-    setCount(0); // optimistically remove from UI
+    const previousCount = count;
+    setCount(0);
     try {
-      setLoading(true);
+      setRemoveLoading(true);
       const res = await fetch("/api/cart", {
         method: "DELETE",
         headers: {
@@ -39,20 +40,7 @@ export function CartItemControl({
       if (d.success) {
         toast.success(
           <div className="flex items-center gap-16">
-            <div>
-              {d?.data.totalItems} items removed from cart.
-              {d?.data.subtotal && (
-                <>
-                  <br />
-                  <strong>Total: ${d?.data.subtotal.toLocaleString()}</strong>
-                </>
-              )}
-            </div>
-            <div>
-              <Link className={buttonVariants()} href="/cart">
-                view cart
-              </Link>
-            </div>
+            item(s) removed from cart.
           </div>,
         );
         router.refresh();
@@ -64,13 +52,13 @@ export function CartItemControl({
       toast.error("Something went wrong. try again later.");
       setCount(previousCount);
     } finally {
-      setLoading(false);
+      setRemoveLoading(false);
     }
   }
 
   async function updateQuantity(productId: string) {
     try {
-      setLoading(true);
+      setUpdateLoading(true);
       const res = await fetch("/api/cart", {
         method: "PATCH",
         headers: {
@@ -82,30 +70,17 @@ export function CartItemControl({
       if (d.success) {
         toast.success(
           <div className="flex items-center gap-16">
-            <div>
-              {d?.data.totalItems} items updated in your cart.
-              {d?.data.subtotal && (
-                <>
-                  <br />
-                  <strong>Total: ${d?.data.subtotal.toLocaleString()}</strong>
-                </>
-              )}
-            </div>
-            <div>
-              <Link className={buttonVariants()} href="/cart">
-                view cart
-              </Link>
-            </div>
+            item(s) updated in your cart.
           </div>,
         );
         router.refresh();
         return;
       }
-      toast.error("Failed to add items to cart. try again later.");
+      toast.error("Failed to update items in your cart. try again later.");
     } catch {
       toast.error("Something went wrong. try again later.");
     } finally {
-      setLoading(false);
+      setUpdateLoading(false);
     }
   }
 
@@ -127,18 +102,18 @@ export function CartItemControl({
       <Button
         className="cursor-pointer"
         onClick={() => updateQuantity(cartItem.productId)}
-        disabled={loading}
+        disabled={updateLoading || removeLoading}
       >
-        {loading ? "Loading..." : "Update Quantity"}
+        {updateLoading ? "Updating..." : "Update Quantity"}
       </Button>
       <Button
         variant={"destructive"}
         className="cursor-pointer"
         onClick={() => removeFromCart(cartItem.productId)}
-        disabled={loading}
+        disabled={updateLoading || removeLoading}
         aria-label="Remove from cart"
       >
-        {loading ? "Loading..." : <Trash />}
+        {removeLoading ? "Removing..." : <Trash />}
       </Button>
     </div>
   );

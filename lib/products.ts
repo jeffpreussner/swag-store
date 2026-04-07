@@ -107,9 +107,6 @@ export async function fetchStock(
 export async function fetchCart(
   cartToken: string | undefined,
 ): Promise<CartContentsResponse | null> {
-  "use cache";
-  cacheTag("productStock");
-  cacheLife("days");
   if (!cartToken) return null;
   const res = await fetch(`https://vercel-swag-store-api.vercel.app/api/cart`, {
     headers: {
