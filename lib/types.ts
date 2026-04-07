@@ -1,3 +1,5 @@
+import { type } from "os";
+
 export type Product = {
   id: string;
   name: string;
@@ -13,14 +15,29 @@ export type Product = {
 };
 
 //Make these types more consistent
-export type FeaturedProductData = {
+export type ProuctResponse = {
   success: boolean;
   data: Product[];
+  meta: {
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+    };
+  };
 };
 
 export type ProductResponse = {
   success: boolean;
-  data: Product;
+  data?: Product;
+  error?: {
+    code: string;
+    message: string;
+    details: string | null;
+  };
 };
 
 export type ProductStock = {
@@ -48,7 +65,7 @@ export type ActivePromoResponse = {
 
 export type CartContentsResponse = {
   success: boolean;
-  data: {
+  data?: {
     token: string;
     items: CartItem[];
     totalItems: number;
@@ -56,6 +73,11 @@ export type CartContentsResponse = {
     currency: string;
     createdAt: string;
     updatedAt: string;
+  };
+  error?: {
+    code: string;
+    message: string;
+    details: null;
   };
 };
 
@@ -66,4 +88,30 @@ export type CartItem = {
   product: Product;
   lineTotal: number;
   stock?: number;
+};
+
+export type SearchParams = {
+  page?: number;
+  search?: string;
+  category?: string;
+  limit?: number;
+};
+
+export type Category = {
+  slug: string;
+  name: string;
+  productCount: number;
+};
+
+export type CategoryResponse = {
+  success: boolean;
+  data: Category[];
+};
+
+export type PaginationLinkProps = {
+  className?: string;
+  isActive?: boolean;
+  href?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 };

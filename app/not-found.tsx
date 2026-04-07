@@ -62,7 +62,7 @@ export default function ProductNotFound() {
       <div className="bg-secondary text-secondary-foreground">
         <div className="pt-20 pb-10 px-4 text-center gap-6 flex flex-col items-center max-w-3xl mx-auto">
           <h1 className="text-6xl md:text-9xl font-bold mb-4">404</h1>
-          <p className="text-2xl">What you are looking for doen't exist.</p>
+          <p className="text-2xl">What you are looking for does not exist.</p>
         </div>
       </div>
     </div>

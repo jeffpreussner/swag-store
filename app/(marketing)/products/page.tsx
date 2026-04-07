@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ProductPage() {
-  const featuredPromise = fetchProducts(false);
+  const productPromise = fetchProducts(false);
 
   return (
     <div className="max-w-5xl mx-auto py-10 px-4">
@@ -55,7 +55,7 @@ export default async function ProductPage() {
                 </>
               }
             >
-              <Products featuredPromise={featuredPromise} />
+              <Products productPromise={productPromise} />
             </Suspense>
           </div>
           <div className="text-center mt-10">
@@ -68,15 +68,15 @@ export default async function ProductPage() {
 }
 
 async function Products({
-  featuredPromise,
+  productPromise,
 }: {
-  featuredPromise: ReturnType<typeof fetchProducts>;
+  productPromise: ReturnType<typeof fetchProducts>;
 }) {
-  const response = await featuredPromise;
+  const response = await productPromise;
   if (!response?.data?.length)
     return (
       <p className="text-center text-lg mx-auto col-span-3">
-        No featured products found. Sorry all sold out ¯\_(ツ)_/¯
+        No products found. Sorry all sold out ¯\_(ツ)_/¯
       </p>
     );
   return (
@@ -96,8 +96,8 @@ async function Products({
             className="mx-auto"
           />
           <h3 className="text-xl font-bold mt-4">{product.name}</h3>
-          <p className="mt-2">{product.description}</p>
-          <p className="mt-2 font-semibold">
+          <p className="mt-2 ">{product.description}</p>
+          <p className="mt-2 font-semibold font-mono">
             ${product.price.toLocaleString()}
           </p>
         </Link>

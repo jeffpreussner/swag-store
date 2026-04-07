@@ -1,5 +1,12 @@
 "use client";
 import { buttonVariants } from "@/components/ui/button";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Product Error",
+  description:
+    "An error occurred while trying to retrieve the product you are looking for.",
+};
 
 export default function Error({
   error,
@@ -13,12 +20,15 @@ export default function Error({
       <div className="bg-secondary text-secondary-foreground">
         <div className="pt-20 pb-10 px-4 text-center gap-6 flex flex-col items-center max-w-3xl mx-auto">
           <h1 className="text-6xl md:text-9xl font-bold mb-4">Oh Snap.</h1>
-          <p className="text-2xl">Looks like something bad happened</p>
+          <p className="text-2xl">
+            Looks like something bad happened while trying to retrieve the
+            product you are looking for.
+          </p>
           {error.digest && (
             <p className="text-sm text-muted-foreground">
               Error ID: {error.digest}
             </p>
-          )}{" "}
+          )}
           <button
             onClick={() => unstable_retry()}
             className={buttonVariants({ size: "lg" })}

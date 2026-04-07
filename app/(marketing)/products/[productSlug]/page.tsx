@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { fetchProduct, fetchStock } from "@/lib/products";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import {
   Carousel,
@@ -88,15 +89,16 @@ async function ProductDetails({
     fetchProduct(productSlug),
     fetchStock(productSlug),
   ]);
+  const error = productRes?.error;
+  if (error?.code === "NOT_FOUND" || !productRes?.data) {
+    notFound();
+  } else if (error) {
+    throw new Error(error.message);
+  }
+
   const data = productRes?.data;
   const stock = stockRes?.data;
 
-  if (!data)
-    return (
-      <p className="text-center text-lg mx-auto col-span-3">
-        No featured products found. Sorry all sold out ¯\_(ツ)_/¯
-      </p>
-    );
   return (
     <>
       <div className="container px-4">

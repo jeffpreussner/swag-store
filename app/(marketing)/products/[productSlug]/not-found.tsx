@@ -1,20 +1,24 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+import { buttonVariants } from "@/components/ui/button";
+
+export const metadata: Metadata = {
+  title: "Product Not Found",
+  description:
+    "The product you are looking for does not exist or has been moved.",
+};
 
 export default function ProductNotFound() {
   return (
-    <div className="container">
-      <h1>404</h1>
-      <p>Product Not Found</p>
-      <p>
-        The product you&apos;re looking for doesn&apos;t exist or has been
-        moved.
-      </p>
-      <Link
-        href="/"
-        className="rounded bg-gray-900 px-6 py-3 font-medium text-white hover:bg-gray-800"
-      >
-        Head home
-      </Link>
+    <div>
+      <div className="bg-secondary text-secondary-foreground">
+        <div className="pt-20 pb-10 px-4 text-center gap-6 flex flex-col items-center max-w-3xl mx-auto">
+          <h1 className="text-6xl md:text-9xl font-bold mb-4">404</h1>
+          <p className="text-2xl">
+            The product you are looking for does not exist or has moved.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

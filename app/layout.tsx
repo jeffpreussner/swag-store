@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
-import { Roboto, Roboto_Slab } from "next/font/google";
+import { Roboto, Roboto_Slab, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
 const robotoSlabHeading = Roboto_Slab({
   subsets: ["latin"],
-  variable: "--font-heading",
+  variable: "--font-g-heading",
 });
-const roboto = Roboto({ subsets: ["latin"], variable: "--font-sans" });
+
+const robotoMono = Roboto_Mono({
+  subsets: ["latin"],
+  variable: "--font-g-mono",
+});
+
+const roboto = Roboto({ subsets: ["latin"], variable: "--font-g-sans" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -48,6 +54,7 @@ export default function RootLayout({
         "font-sans",
         roboto.variable,
         robotoSlabHeading.variable,
+        robotoMono.variable,
       )}
     >
       <body className="min-h-full flex flex-col">{children}</body>

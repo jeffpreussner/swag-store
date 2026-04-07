@@ -1,21 +1,24 @@
 import { cacheTag, cacheLife } from "next/cache";
 import {
-  FeaturedProductData,
+  ProuctResponse,
   ProductResponse,
   ProductStock,
   ActivePromoResponse,
   CartContentsResponse,
+  SearchParams,
+  CategoryResponse,
 } from "@/lib/types";
-
+import queryString from "query-string";
 export async function fetchProducts(
   featured: boolean,
-): Promise<FeaturedProductData | null> {
+  params: SearchParams = {},
+): Promise<ProuctResponse | null> {
   "use cache";
   cacheTag("featured-products");
   cacheLife("days");
-
+  const qs = queryString.stringify({ ...{ featured: featured }, ...params });
   const res = await fetch(
-    `https://vercel-swag-store-api.vercel.app/api/products?featured=${String(featured)}`,
+    `https://vercel-swag-store-api.vercel.app/api/products?${qs}`,
     {
       headers: {
         "x-vercel-protection-bypass": process.env.SWAG_STORE_API_KEY || "",
@@ -72,6 +75,36 @@ export async function fetchProduct(
     },
   );
 
+  if (res.status === 404) {
+    return null;
+  }
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}`);
+  }
+
+  const data = await res.json();
+  return data;
+}
+
+export async function fetchCategories(): Promise<CategoryResponse | null> {
+  "use cache";
+  cacheTag("categories");
+  cacheLife("days");
+
+  const res = await fetch(
+    "https://vercel-swag-store-api.vercel.app/api/categories",
+    {
+      headers: {
+        "x-vercel-protection-bypass": process.env.SWAG_STORE_API_KEY || "",
+      },
+    },
+  );
+
+  if (res.status === 404) {
+    return null;
+  }
+
   if (!res.ok) {
     throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}`);
   }
@@ -96,8 +129,12 @@ export async function fetchStock(
     },
   );
 
+  if (res.status === 404) {
+    return null;
+  }
+
   if (!res.ok) {
-    throw new Error(`Failed to fetch stock: ${res.status} ${res.statusText}`);
+    throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}`);
   }
 
   const data = await res.json();
@@ -114,6 +151,10 @@ export async function fetchCart(
       "x-cart-token": cartToken || "",
     },
   });
+
+  if (res.status === 404) {
+    return null;
+  }
 
   if (!res.ok) {
     throw new Error(`Failed to fetch cart: ${res.status} ${res.statusText}`);
