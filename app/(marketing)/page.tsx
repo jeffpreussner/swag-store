@@ -13,12 +13,13 @@ export const metadata: Metadata = {
   description:
     "Acme Swag Homepage is the place to find the latest and greatest swaggy stuff!",
 };
-
+ 
 export default async function MarketingPage() {
+ 
   // both promises can be awaited in parallel
   const promoPromise = fetchActivePromo();
   const featuredPromise = fetchProducts(true);
-
+  
   return (
     <div>
       <div className="h-20 md:h-10 bg-secondary">
