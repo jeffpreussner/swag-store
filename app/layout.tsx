@@ -8,14 +8,16 @@ import { Analytics } from "@vercel/analytics/react";
 const robotoSlabHeading = Roboto_Slab({
   subsets: ["latin"],
   variable: "--font-g-heading",
+  display: "swap",
 });
 
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
   variable: "--font-g-mono",
+  display: "swap",
 });
 
-const roboto = Roboto({ subsets: ["latin"], variable: "--font-g-sans" });
+const roboto = Roboto({ subsets: ["latin"], variable: "--font-g-sans", display: "swap"});
 
 export const metadata: Metadata = {
   metadataBase: new URL(
