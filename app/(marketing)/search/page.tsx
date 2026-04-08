@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { SearchFilters } from "@/components/ui/custom/search-filters";
 import { SearchParams } from "@/lib/types";
 import { SearchPagination } from "@/components/ui/custom/search-pagination";
+import { placeholder } from "@/lib/placeholder";
 
 export const metadata: Metadata = {
   title: "Product Search",
@@ -102,6 +103,8 @@ async function Products({
             className="mx-auto"
             sizes="100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             quality={50}
+            placeholder="blur"
+            blurDataURL={placeholder(300,300)}
           />
           <h3 className="text-xl font-bold mt-4">{product.name}</h3>
           <p className="mt-2">{product.description}</p>

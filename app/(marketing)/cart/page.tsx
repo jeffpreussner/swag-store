@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Suspense } from "react";
 import { CartItemControl } from "@/components/ui/custom/cart-item-control";
 import { CheckoutButton } from "@/components/ui/custom/checkout-button";
+import { placeholder } from "@/lib/placeholder";
 
 export const metadata: Metadata = {
   title: "Cart",
@@ -25,18 +26,6 @@ export default async function CartPage() {
           <Suspense
             fallback={
               <ul className="grid grid-cols-1 gap-6 mt-10">
-                <li>
-                  <Skeleton className="h-20 w-full" />
-                </li>
-                <li>
-                  <Skeleton className="h-20 w-full" />
-                </li>
-                <li>
-                  <Skeleton className="h-20 w-full" />
-                </li>
-                <li>
-                  <Skeleton className="h-20 w-full" />
-                </li>
                 <li>
                   <Skeleton className="h-20 w-full" />
                 </li>
@@ -93,6 +82,9 @@ async function Cart() {
                 quality={50}
                 className="mx-auto"
                 sizes="40px"
+                placeholder="blur"
+                blurDataURL={placeholder(40,40)}
+                fill
               />
             </div>
             <div className=" basis-1/2">

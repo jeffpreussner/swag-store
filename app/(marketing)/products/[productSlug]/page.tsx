@@ -17,6 +17,7 @@ import {
 
 import { AddToCartButton } from "@/components/ui/custom/add-to-cart-button";
 import { ChevronLeft } from "lucide-react";
+import { placeholder } from "@/lib/placeholder";
 
 export async function generateMetadata(props: {
   params: Promise<{ productSlug: string }>;
@@ -109,9 +110,8 @@ async function ProductDetails({
           <ChevronLeft /> Back to Products
         </Link>
       </div>
-      <div className="text-center text-lg mx-auto col-span-3 max-w-md mx-auto p-4">
+      <div className="text-center text-lg mx-auto col-span-3 max-w-md mx-auto p-4 grid grid-cols-1 gap-6">
         {/* only load carousel if more than 2 images */}
-
         {data.images && data.images.length < 2 && (
           <Image
             priority={true}
@@ -123,11 +123,13 @@ async function ProductDetails({
             height={400}
             quality={50}
             sizes="100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            placeholder="blur"
+            blurDataURL={placeholder(400,400)}
           />
         )}
         {data.images && data.images.length > 2 && (
           <Carousel>
-            <CarouselContent>
+              <CarouselContent>
               {data.images.map((imgSrc: string, i: number) => (
                 <CarouselItem key={`product-detail-image-${i}`}>
                   {/* only prioritize the first image */}
@@ -141,6 +143,8 @@ async function ProductDetails({
                     height={400}
                     quality={50}
                     sizes="100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    placeholder="blur"
+                    blurDataURL={placeholder(400,400)}
                   />
                 </CarouselItem>
               ))}
