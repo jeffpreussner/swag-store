@@ -119,6 +119,8 @@ async function ProductDetails({
             alt={data.name}
             width={400}
             height={400}
+            quality={50}
+            sizes="100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         )}
         {data.images && data.images.length > 2 && (
@@ -133,6 +135,9 @@ async function ProductDetails({
                     alt={data.name}
                     width={400}
                     height={400}
+                    quality={50}
+                    sizes="100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+
                   />
                 </CarouselItem>
               ))}

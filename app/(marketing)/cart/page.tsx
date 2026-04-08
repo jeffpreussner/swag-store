@@ -92,6 +92,7 @@ async function Cart() {
                 height={40}
                 quality={50}
                 className="mx-auto"
+                sizes="40px"
               />
             </div>
             <div className=" basis-1/2">

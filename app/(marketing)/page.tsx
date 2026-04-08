@@ -46,6 +46,8 @@ export default async function MarketingPage() {
             height={400}
             className="aspect-[3/1]"
             placeholder="blur"
+            quality={50}
+            sizes="100vw"
           />
         </div>
       </div>
