@@ -40,6 +40,8 @@ export default async function MarketingPage() {
         <div className="bg-gray-800 aspect-[3/1] mt-6 mx-auto w-full max-w-5xl">
           <Image
             priority={true}
+            fetchPriority="high"
+            loading="eager"
             src={heroImg}
             alt="Store Hero Image"
             width={1200}

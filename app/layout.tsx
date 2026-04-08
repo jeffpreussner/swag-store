@@ -9,15 +9,22 @@ const robotoSlabHeading = Roboto_Slab({
   subsets: ["latin"],
   variable: "--font-g-heading",
   display: "swap",
+  adjustFontFallback: true,
 });
 
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
   variable: "--font-g-mono",
   display: "swap",
+  adjustFontFallback: true,
 });
 
-const roboto = Roboto({ subsets: ["latin"], variable: "--font-g-sans", display: "swap"});
+const roboto = Roboto({
+  subsets: ["latin"],
+  variable: "--font-g-sans",
+  display: "swap",
+  adjustFontFallback: true,
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(

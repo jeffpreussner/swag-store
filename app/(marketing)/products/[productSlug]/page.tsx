@@ -115,6 +115,8 @@ async function ProductDetails({
         {data.images && data.images.length < 2 && (
           <Image
             priority={true}
+            fetchPriority="high"
+            loading="eager"
             src={data.images[0]}
             alt={data.name}
             width={400}
@@ -131,13 +133,14 @@ async function ProductDetails({
                   {/* only prioritize the first image */}
                   <Image
                     priority={i === 0}
+                    fetchPriority={i === 0 ? "high" : "auto"}
+                    loading={i === 0 ? "eager" : "lazy"}
                     src={imgSrc}
                     alt={data.name}
                     width={400}
                     height={400}
                     quality={50}
                     sizes="100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-
                   />
                 </CarouselItem>
               ))}
