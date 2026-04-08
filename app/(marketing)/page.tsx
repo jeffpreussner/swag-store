@@ -7,7 +7,7 @@ import { Product } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Metadata } from "next";
 import heroImg from "@/public/img/1200x400-grayscale.jpg";
-import {placeholder} from "@/lib/placeholder";
+import { placeholder } from "@/lib/placeholder";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -128,7 +128,7 @@ async function FeaturedProducts({
             quality={75}
             className="mx-auto"
             placeholder="blur"
-            blurDataURL={placeholder(300,300)}
+            blurDataURL={placeholder(300, 300)}
           />
           <h3 className="text-xl font-bold mt-4">{product.name}</h3>
           <p className="mt-2">{product.description}</p>

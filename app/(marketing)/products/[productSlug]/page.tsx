@@ -124,12 +124,12 @@ async function ProductDetails({
             quality={50}
             sizes="100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             placeholder="blur"
-            blurDataURL={placeholder(400,400)}
+            blurDataURL={placeholder(400, 400)}
           />
         )}
         {data.images && data.images.length > 2 && (
           <Carousel>
-              <CarouselContent>
+            <CarouselContent>
               {data.images.map((imgSrc: string, i: number) => (
                 <CarouselItem key={`product-detail-image-${i}`}>
                   {/* only prioritize the first image */}
@@ -144,7 +144,7 @@ async function ProductDetails({
                     quality={50}
                     sizes="100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     placeholder="blur"
-                    blurDataURL={placeholder(400,400)}
+                    blurDataURL={placeholder(400, 400)}
                   />
                 </CarouselItem>
               ))}

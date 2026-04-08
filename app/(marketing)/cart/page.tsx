@@ -83,7 +83,7 @@ async function Cart() {
                 className="mx-auto"
                 sizes="40px"
                 placeholder="blur"
-                blurDataURL={placeholder(40,40)}
+                blurDataURL={placeholder(40, 40)}
                 fill
               />
             </div>

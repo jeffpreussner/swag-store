@@ -104,7 +104,7 @@ async function Products({
             sizes="100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             quality={50}
             placeholder="blur"
-            blurDataURL={placeholder(300,300)}
+            blurDataURL={placeholder(300, 300)}
           />
           <h3 className="text-xl font-bold mt-4">{product.name}</h3>
           <p className="mt-2">{product.description}</p>

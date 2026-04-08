@@ -9,4 +9,5 @@ const toBase64 = (str: string) =>
     : window.btoa(str);
 
 // ideally this placeholder would come from the server along with the product image but for the purpose of this project well use a shimmer svg
-export const placeholder = (w=300,h=300) => `data:image/svg+xml;base64,${toBase64(svg(w , h))}`;
+export const placeholder = (w = 300, h = 300) =>
+  `data:image/svg+xml;base64,${toBase64(svg(w, h))}`;
