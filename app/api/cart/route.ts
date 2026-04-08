@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { ONE_DAY_IN_SECONDS, TOKEN_COOKIE_NAME } from "@/lib/const";
-
+import { CartContentsResponse, CartItem } from "@/lib/types";
+import { normalizeField } from "@/lib/products";
 async function getOrCreateCartToken(
   cookieStore: Awaited<ReturnType<typeof cookies>>,
 ) {
@@ -27,6 +28,19 @@ async function getOrCreateCartToken(
   return cartToken;
 }
 
+function normalizeCart(cartData: CartContentsResponse["data"]) {
+  // if !cartData is true we dont do the normalization pass it back and let error handling pick it up.
+  if (!cartData) return cartData;
+  return {
+    ...normalizeField(cartData, "subtotal"),
+    items: cartData.items?.map((item: CartItem) => ({
+      ...item,
+      lineTotal: item.lineTotal / 100,
+      product: normalizeField(item.product, "price"),
+    })),
+  };
+}
+
 export async function POST(request: Request) {
   try {
     const cookieStore = await cookies();
@@ -45,6 +59,8 @@ export async function POST(request: Request) {
       },
     );
     const data = await addToCartReq.json();
+    data.data = normalizeCart(data.data);
+
     const response = NextResponse.json(data, {
       status: addToCartReq.status,
     });
@@ -87,6 +103,7 @@ export async function PATCH(request: Request) {
     );
 
     const data = await updateCart.json();
+    data.data = normalizeCart(data.data);
     const response = NextResponse.json(data, {
       status: updateCart.status,
     });
@@ -130,6 +147,7 @@ export async function DELETE(request: Request) {
     );
 
     const data = await deleteItem.json();
+    data.data = normalizeCart(data.data);
     const response = NextResponse.json(data, {
       status: deleteItem.status,
     });

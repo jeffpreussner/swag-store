@@ -7,8 +7,19 @@ import {
   CartContentsResponse,
   SearchParams,
   CategoryResponse,
+  CartItem,
+  Product,
 } from "@/lib/types";
 import queryString from "query-string";
+
+//This function takes an object and a key returns the object with that key divided by 100 for cent to dollar conversion
+export function normalizeField(
+  obj: Record<string, unknown>,
+  key: string,
+): Record<string, unknown> {
+  return { ...obj, [key]: (obj[key] as number) / 100 };
+}
+
 export async function fetchProducts(
   featured: boolean,
   params: SearchParams = {},
@@ -32,6 +43,8 @@ export async function fetchProducts(
   }
 
   const data = await res.json();
+  data.data = data.data.map((p: Product) => normalizeField(p, "price"));
+
   return data;
 }
 
@@ -84,6 +97,7 @@ export async function fetchProduct(
   }
 
   const data = await res.json();
+  if (data.data) data.data = normalizeField(data.data, "price");
   return data;
 }
 
@@ -161,5 +175,14 @@ export async function fetchCart(
   }
 
   const data = await res.json();
+  if (data.data) {
+    data.data.subtotal = data.data.subtotal / 100;
+    data.data.items = data.data.items.map((item: CartItem) => ({
+      ...item,
+      lineTotal: item.lineTotal / 100,
+      product: normalizeField(item.product, "price"),
+    }));
+  }
+
   return data;
 }

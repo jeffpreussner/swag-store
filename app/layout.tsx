@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Roboto, Roboto_Slab, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 const robotoSlabHeading = Roboto_Slab({
   subsets: ["latin"],
@@ -57,7 +59,11 @@ export default function RootLayout({
         robotoMono.variable,
       )}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }

@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { SearchFilters } from "@/components/ui/custom/search-filters";
 import { SearchParams } from "@/lib/types";
 import { SearchPagination } from "@/components/ui/custom/search-pagination";
+
 export const metadata: Metadata = {
   title: "Product Search",
   description:
@@ -67,7 +68,9 @@ async function ProductsPagination({
 }) {
   const params = await searchParams;
   const productPromise = fetchProducts(false, { ...params, limit: 5 });
-  return <SearchPagination productPromise={productPromise} searchParams={params} />;
+  return (
+    <SearchPagination productPromise={productPromise} searchParams={params} />
+  );
 }
 
 async function Products({
