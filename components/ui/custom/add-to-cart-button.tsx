@@ -1,10 +1,11 @@
 "use client";
+
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useActionState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { addToCart } from "@/app/actions/cart";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 export function AddToCartButton({
   product,
@@ -14,32 +15,25 @@ export function AddToCartButton({
   max: number;
 }) {
   const [count, setCount] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   function updateCount(e: React.ChangeEvent<HTMLInputElement>) {
     setCount(Number(e.target.value));
   }
-  async function addToCart(product: string) {
-    try {
-      setLoading(true);
-      const res = await fetch("/api/cart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ productId: product, quantity: count }),
-      });
-      const d = await res.json();
-      if (d.success) {
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [state, dispatch, pending] = useActionState(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async (_prev: unknown) => {
+      try {
+        const data = await addToCart(product, count);
         toast.success(
           <div className="flex items-center gap-16">
             <div>
-              {d?.data.totalItems} items added to cart.
-              {d?.data.subtotal && (
+              {data.totalItems} items added to cart.
+              {data.subtotal && (
                 <>
                   <br />
-                  <strong>Total: ${d?.data.subtotal.toLocaleString()}</strong>
+                  <strong>Total: ${data.subtotal.toLocaleString()}</strong>
                 </>
               )}
             </div>
@@ -50,33 +44,28 @@ export function AddToCartButton({
             </div>
           </div>,
         );
-        router.refresh();
-        return;
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "Failed to add to cart.");
       }
-      toast.error("Failed to add items to cart. try again later.");
-    } catch {
-      toast.error("Something went wrong. try again later.");
-    } finally {
-      setLoading(false);
-    }
-  }
+    },
+    null,
+  );
   return (
     <>
-      <Input
-        className="w-20"
-        onChange={updateCount}
-        min={1}
-        max={max}
-        type="number"
-        value={count}
-      />
-      <Button
-        className="cursor-pointer"
-        onClick={() => addToCart(product)}
-        disabled={loading}
-      >
-        {loading ? "Loading..." : "Add to Cart"}
-      </Button>
+      <form action={dispatch}>
+        <input type="hidden" name="..." />
+        <Input
+          className="w-20"
+          onChange={updateCount}
+          min={1}
+          max={max}
+          type="number"
+          value={count}
+        />
+        <Button className="cursor-pointer" disabled={pending}>
+          {pending ? "Loading..." : "Add to Cart"}
+        </Button>
+      </form>
     </>
   );
 }

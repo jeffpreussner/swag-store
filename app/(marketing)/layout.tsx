@@ -63,7 +63,6 @@ export default function MainLayout({
                   className={buttonVariants({ variant: "ghost" })}
                 >
                   <Suspense fallback={<>Cart</>}>
-                    {/* fetchCart would be used here to show cart count */}
                     Cart <CountBadge />
                   </Suspense>
                 </Link>
@@ -89,6 +88,11 @@ export default function MainLayout({
     </>
   );
 }
+// We are showing cart count in a server component so it wont
+// update until the cache is invalidated and the client refetches.
+// This is a simple way to show the count without needing to lift 
+// state up to a provider or use a client component for the entire layout.
+// In the future we could creating a client component with a provider as an enhancement.
 
 async function CountBadge() {
   const cookieStore = await cookies();
