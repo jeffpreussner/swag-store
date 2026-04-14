@@ -3,7 +3,7 @@ import { TOKEN_COOKIE_NAME } from "@/lib/const";
 import { fetchCart, fetchStock } from "@/lib/products";
 import { CartItem } from "@/lib/types";
 import type { Metadata } from "next";
-import { cookies } from "next/dist/server/request/cookies";
+import { cookies } from "next/headers";
 import { Suspense } from "react";
 import { CartList } from "@/components/ui/custom/cart-list";
 
