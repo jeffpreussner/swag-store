@@ -65,11 +65,9 @@ export default async function ProductDetailPage(props: {
 }) {
   return (
     <div>
-      <code>
-        <Suspense fallback={<ProductDetailsSkeleton />}>
-          <ProductDetails params={props.params} />
-        </Suspense>
-      </code>
+      <Suspense fallback={<ProductDetailsSkeleton />}>
+        <ProductDetails params={props.params} />
+      </Suspense>
     </div>
   );
 }
