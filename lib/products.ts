@@ -25,7 +25,7 @@ export async function fetchProducts(
   params: SearchParams = {},
 ): Promise<ProuctResponse | null> {
   "use cache";
-  cacheTag("featured-products");
+  cacheTag(featured ? "featured-products" : "products");
   cacheLife("days");
   const qs = queryString.stringify({ ...{ featured: featured }, ...params });
   const res = await fetch(
@@ -50,7 +50,7 @@ export async function fetchProducts(
 
 export async function fetchActivePromo(): Promise<ActivePromoResponse | null> {
   "use cache";
-  cacheTag("featured-products");
+  cacheTag("active-promo");
   cacheLife("days");
 
   //this is a server component, its safe i swear :)

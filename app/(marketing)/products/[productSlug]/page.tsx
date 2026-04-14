@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Suspense } from "react";
-import { fetchProduct, fetchStock } from "@/lib/products";
+import { fetchProduct, fetchProducts, fetchStock } from "@/lib/products";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -18,6 +18,13 @@ import {
 import { AddToCartButton } from "@/components/ui/custom/add-to-cart-button";
 import { ChevronLeft } from "lucide-react";
 import { placeholder } from "@/lib/placeholder";
+
+export async function generateStaticParams() {
+  const d = await fetchProducts(false);
+  return (d?.data ?? []).map((product) => ({
+    productSlug: product.slug,
+  }));
+}
 
 export async function generateMetadata(props: {
   params: Promise<{ productSlug: string }>;
