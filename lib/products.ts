@@ -76,7 +76,7 @@ export async function fetchProduct(
   productSlug: string,
 ): Promise<ProductResponse | null> {
   "use cache";
-  cacheTag("product");
+  cacheTag(`product-${productSlug}`);
   cacheLife("days");
 
   const res = await fetch(
