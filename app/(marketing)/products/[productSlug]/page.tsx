@@ -18,6 +18,7 @@ import {
 import { AddToCartButton } from "@/components/ui/custom/add-to-cart-button";
 import { ChevronLeft } from "lucide-react";
 import { placeholder } from "@/lib/placeholder";
+import { formattedPrice } from "@/lib/format-price";
 
 export async function generateStaticParams() {
   const d = await fetchProducts(false);
@@ -91,10 +92,7 @@ async function ProductDetails({
   params: Promise<{ productSlug: string }>;
 }) {
   const { productSlug } = await params;
-  const [productRes, stockRes] = await Promise.all([
-    fetchProduct(productSlug),
-    fetchStock(productSlug),
-  ]);
+  const productRes = await fetchProduct(productSlug);
   const error = productRes?.error;
   if (error?.code === "NOT_FOUND" || !productRes?.data) {
     notFound();
@@ -103,7 +101,6 @@ async function ProductDetails({
   }
 
   const data = productRes?.data;
-  const stock = stockRes?.data;
 
   return (
     <>
@@ -132,7 +129,7 @@ async function ProductDetails({
             blurDataURL={placeholder(400, 400)}
           />
         )}
-        {data.images && data.images.length > 2 && (
+        {data.images && data.images.length > 1 && (
           <Carousel>
             <CarouselContent>
               {data.images.map((imgSrc: string, i: number) => (
@@ -162,23 +159,45 @@ async function ProductDetails({
         <div className="flex flex-col gap-6">
           <h1 className="text-3xl md:text-5xl font-bold">{data.name}</h1>
           <p className="text-gray-600 text-lg md:text-xl">{data.description}</p>
-          <p className="font-semibold">${data.price}</p>
+          <p className="font-semibold">{formattedPrice(data.price)}</p>
           <p className="text-gray-500"></p>
-          <div className="flex justify-center items-center gap-4">
-            {stock?.inStock ? (
-              <>
-                <p>{stock?.stock} in Stock:</p>{" "}
-                <AddToCartButton product={data.id} max={stock?.stock} />
-              </>
-            ) : (
-              <Button disabled={true}>Out of Stock</Button>
-            )}
-            {stock?.lowStock && (
-              <p className="text-yellow-500">Low Stock order now!</p>
-            )}
-          </div>
+          <Suspense
+            fallback={
+              <Skeleton className="h-10 w-36 mx-auto mt-4 rounded-md" />
+            }
+          >
+            <StockStatus productSlug={productSlug} productId={data.id} />
+          </Suspense>
         </div>
       </div>
     </>
+  );
+}
+
+async function StockStatus({
+  productSlug,
+  productId,
+}: {
+  productSlug: string;
+  productId: string;
+}) {
+  const stockRes = await fetchStock(productSlug);
+  const stock = stockRes?.data;
+  if (stock === undefined) return null;
+
+  return (
+    <div className="flex justify-center items-center gap-4">
+      {stock?.inStock ? (
+        <>
+          <p>{stock?.stock} in Stock:</p>{" "}
+          <AddToCartButton product={productId} max={stock?.stock} />
+        </>
+      ) : (
+        <Button disabled={true}>Out of Stock</Button>
+      )}
+      {stock?.lowStock && (
+        <p className="text-yellow-500">Low Stock order now!</p>
+      )}
+    </div>
   );
 }

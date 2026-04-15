@@ -52,7 +52,7 @@ export function AddToCartButton({
   );
   return (
     <>
-      <form action={dispatch}>
+      <form action={dispatch} className="flex items-center gap-4">
         <input type="hidden" name="..." />
         <Input
           className="w-20"

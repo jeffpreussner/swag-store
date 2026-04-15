@@ -2,13 +2,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { fetchCategories, fetchProducts } from "@/lib/products";
 import { Product } from "@/lib/types";
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
 import { Suspense } from "react";
 import { SearchFilters } from "@/components/ui/custom/search-filters";
 import { SearchParams } from "@/lib/types";
 import { SearchPagination } from "@/components/ui/custom/search-pagination";
-import { placeholder } from "@/lib/placeholder";
+import { ProductCard } from "@/components/ui/custom/product-card";
 
 export const metadata: Metadata = {
   title: "Product Search",
@@ -90,28 +88,7 @@ async function Products({
   return (
     <>
       {response?.data?.map((product: Product) => (
-        <Link
-          href={`/products/${product.slug}`}
-          key={product.id}
-          className="border p-4 rounded-lg"
-        >
-          <Image
-            src={product.images[0]}
-            alt={product.name}
-            width={300}
-            height={300}
-            className="mx-auto"
-            sizes="100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            quality={50}
-            placeholder="blur"
-            blurDataURL={placeholder(300, 300)}
-          />
-          <h3 className="text-xl font-bold mt-4">{product.name}</h3>
-          <p className="mt-2">{product.description}</p>
-          <p className="mt-2 font-semibold">
-            ${product.price.toLocaleString()}
-          </p>
-        </Link>
+        <ProductCard key={product.id} product={product} />
       ))}
     </>
   );
