@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { fetchProducts } from "@/lib/products";
 import { Product } from "@/lib/types";
-const baseUrl = process.env.BASE_URL || 'https://localhost:3000';
+const baseUrl = process.env.BASE_URL || "https://localhost:3000";
 async function getProductPages() {
   const allProducts: Product[] = [];
   let page = 1;

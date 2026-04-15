@@ -5,8 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       disallow: ["/cart", "/api/"],
-      allow:"/"
+      allow: "/",
     },
-    sitemap: `${process.env.BASE_URL || 'https://localhost:3000'}/sitemap.xml`,
+    sitemap: `${process.env.BASE_URL || "https://localhost:3000"}/sitemap.xml`,
   };
 }
