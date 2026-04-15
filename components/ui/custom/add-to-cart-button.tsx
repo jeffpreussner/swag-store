@@ -6,7 +6,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { addToCart } from "@/app/actions/cart";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-
+import { formatPrice } from "@/lib/format-price";
 export function AddToCartButton({
   product,
   max,
@@ -33,7 +33,7 @@ export function AddToCartButton({
               {data.subtotal && (
                 <>
                   <br />
-                  <strong>Total: ${data.subtotal.toLocaleString()}</strong>
+                  <strong>Total: {formatPrice(data.subtotal)}</strong>
                 </>
               )}
             </div>
