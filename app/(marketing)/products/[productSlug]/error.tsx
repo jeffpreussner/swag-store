@@ -1,12 +1,5 @@
 "use client";
 import { buttonVariants } from "@/components/ui/button";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Product Error",
-  description:
-    "An error occurred while trying to retrieve the product you are looking for.",
-};
 
 export default function Error({
   error,

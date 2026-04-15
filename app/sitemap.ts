@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { fetchProducts } from "@/lib/products";
 import { Product } from "@/lib/types";
-
+const baseUrl = process.env.BASE_URL || 'https://localhost:3000';
 async function getProductPages() {
   const allProducts: Product[] = [];
   let page = 1;
@@ -17,7 +17,7 @@ async function getProductPages() {
 
   return (
     allProducts.map((product: Product) => ({
-      url: `${process.env.BASE_URL}/products/${product.slug}`,
+      url: `${baseUrl}/products/${product.slug}`,
       lastModified: product.createdAt,
       changeFrequency: "weekly" as const,
       images: product.images,
@@ -29,19 +29,19 @@ async function getProductPages() {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     {
-      url: `${process.env.BASE_URL}/`,
+      url: `${baseUrl}/`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1,
     },
     {
-      url: `${process.env.BASE_URL}/products`,
+      url: `${baseUrl}/products`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
-      url: `${process.env.BASE_URL}/search`,
+      url: `${baseUrl}/search`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.5,
