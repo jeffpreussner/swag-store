@@ -130,11 +130,11 @@ export async function fetchCategories(): Promise<CategoryResponse | null> {
 export async function fetchStock(
   productSlug: string,
 ): Promise<ProductStock | null> {
- // if we cache here it would need to be short to avoid errors
- // potentially adding out of stock items to cart, but this also
- // would shorten the cache on any page its added to. Solution, no
- // cache, always most up to date stock, and fetch is dynamic by default
- // allowing us to have longer cache on product page. 
+  // if we cache here it would need to be short to avoid errors
+  // potentially adding out of stock items to cart, but this also
+  // would shorten the cache on any page its added to. Solution, no
+  // cache, always most up to date stock, and fetch is dynamic by default
+  // allowing us to have longer cache on product page.
 
   const res = await fetch(
     `https://vercel-swag-store-api.vercel.app/api/products/${productSlug}/stock`,
