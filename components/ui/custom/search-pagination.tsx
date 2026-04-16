@@ -15,9 +15,11 @@ import { PaginationLinkProps } from "@/lib/types";
 export async function SearchPagination({
   productPromise,
   searchParams,
+  route = "/search",
 }: {
   productPromise: ReturnType<typeof fetchProducts>;
   searchParams: SearchParams;
+  route?: string;
 }) {
   const response = await productPromise;
   const pagination = response?.meta?.pagination;
@@ -29,7 +31,7 @@ export async function SearchPagination({
     if (searchParams?.search) params.set("search", searchParams.search);
     if (searchParams?.category) params.set("category", searchParams.category);
     params.set("page", String(p));
-    return `/search?${params.toString()}`;
+    return `${route}?${params.toString()}`;
   }
 
   // Build the visible page numbers: always show current-1, current, current+1
@@ -63,6 +65,7 @@ export async function SearchPagination({
             <PaginationLink href={pageHref(1)}>1</PaginationLink>
           </PaginationItem>
         )}
+
         {showLeadingEllipsis && (
           <PaginationItem>
             <PaginationEllipsis />

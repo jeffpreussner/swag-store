@@ -1,10 +1,10 @@
-import { LoadMoreButton } from "@/components/ui/custom/load-more-button";
 import { ProductCard } from "@/components/ui/custom/product-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchProducts } from "@/lib/products";
-import { Product } from "@/lib/types";
+import { Product, SearchParams } from "@/lib/types";
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { ProductsPagination } from "@/components/ui/custom/products-pagination";
 
 export const metadata: Metadata = {
   title: "Products",
@@ -12,7 +12,11 @@ export const metadata: Metadata = {
     "Acme Swag Products page is the place to find the latest and greatest swaggy stuff!",
 };
 
-export default async function ProductPage() {
+export default async function ProductPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
   const productPromise = fetchProducts(false);
 
   return (
@@ -58,7 +62,13 @@ export default async function ProductPage() {
             </Suspense>
           </div>
           <div className="text-center mt-10">
-            <LoadMoreButton />
+            <Suspense fallback={<Skeleton className="h-64 w-full" />}>
+              <ProductsPagination
+                searchParams={searchParams}
+                limit={20}
+                route="/products"
+              />
+            </Suspense>
           </div>
         </div>
       </div>

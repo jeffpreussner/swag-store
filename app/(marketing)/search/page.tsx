@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { SearchFilters } from "@/components/ui/custom/search-filters";
 import { SearchParams } from "@/lib/types";
-import { SearchPagination } from "@/components/ui/custom/search-pagination";
+import { ProductsPagination } from "@/components/ui/custom/products-pagination";
 import { ProductCard } from "@/components/ui/custom/product-card";
 
 export const metadata: Metadata = {
@@ -58,18 +58,6 @@ export default function SearchPage({
 async function SearchFiltersLoader() {
   const res = await fetchCategories();
   return <SearchFilters categories={res?.data || []} />;
-}
-
-async function ProductsPagination({
-  searchParams,
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
-  const params = await searchParams;
-  const productPromise = fetchProducts(false, { ...params, limit: 5 });
-  return (
-    <SearchPagination productPromise={productPromise} searchParams={params} />
-  );
 }
 
 async function Products({
