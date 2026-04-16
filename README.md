@@ -2,7 +2,7 @@
 
 This repository holds the code from the Vercel Cohort 2 Swag Store assignment
 
-## AI Discloser
+## AI Disclosure
 I did not use AI to generate anything other than UI or consult as per project requirements. I did however use AI Suggested commit messages in my Git GUI, I understand this may look sus.
 
 ## Tech Stack
