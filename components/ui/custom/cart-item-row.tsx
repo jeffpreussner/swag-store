@@ -10,6 +10,7 @@ import { Trash } from "lucide-react";
 import { CartItem } from "@/lib/types";
 import { updateCartItem, removeFromCart } from "@/app/actions/cart";
 import { placeholder } from "@/lib/placeholder";
+import { formattedPrice } from "@/lib/format-price";
 
 export function CartItemRow({
   cartItem,
@@ -85,7 +86,7 @@ export function CartItemRow({
       </div>
       <div className="text-sm h-10 flex items-center justify-center">
         <p className="font-bold">Price: </p>
-        <p className="ml-2">${cartItem.product.price.toLocaleString()}</p>
+        <p className="ml-2">{formattedPrice(cartItem.product.price)}</p>
       </div>
       <div className="flex flex-col sm:flex-row items-center gap-2 w-full mx-auto">
         <Label className="text-sm font-bold">
@@ -116,13 +117,12 @@ export function CartItemRow({
           {removePending ? "Removing..." : <Trash />}
         </Button>
       </div>
-      <div className="mr-0 ml-auto">
+      <div className="md:mr-0 md:ml-auto">
         <p className="text-sm font-bold">Total:</p>
         <p className="mt-2 text-xs">
-          {(updatePending
-            ? `$${count * cartItem.product.price}`
-            : `$${cartItem.lineTotal}`
-          ).toLocaleString()}
+          {updatePending
+            ? formattedPrice(count * cartItem.product.price)
+            : formattedPrice(cartItem.lineTotal)}
         </p>
       </div>
     </li>
