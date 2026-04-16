@@ -61,6 +61,7 @@ function setCartCookie(
 export async function addToCart(productId: string, quantity: number) {
   const cookieStore = await cookies();
   const cartToken = await getOrCreateCartToken(cookieStore);
+  setCartCookie(cookieStore, cartToken);
 
   const res = await fetch("https://vercel-swag-store-api.vercel.app/api/cart", {
     method: "POST",
@@ -76,7 +77,6 @@ export async function addToCart(productId: string, quantity: number) {
   if (!d.success) throw new Error(d.error?.message ?? "Failed to add to cart");
 
   d.data = normalizeCart(d.data);
-  setCartCookie(cookieStore, cartToken);
   revalidatePath("/", "layout");
   return d.data;
 }
@@ -84,6 +84,7 @@ export async function addToCart(productId: string, quantity: number) {
 export async function updateCartItem(itemId: string, quantity: number) {
   const cookieStore = await cookies();
   const cartToken = await getOrCreateCartToken(cookieStore);
+  setCartCookie(cookieStore, cartToken);
 
   const res = await fetch(
     `https://vercel-swag-store-api.vercel.app/api/cart/${itemId}`,
@@ -102,7 +103,6 @@ export async function updateCartItem(itemId: string, quantity: number) {
   if (!d.success) throw new Error(d.error?.message || "Failed to update cart");
 
   d.data = normalizeCart(d.data);
-  setCartCookie(cookieStore, cartToken);
   revalidatePath("/", "layout");
   return d.data;
 }
@@ -110,6 +110,7 @@ export async function updateCartItem(itemId: string, quantity: number) {
 export async function removeFromCart(itemId: string) {
   const cookieStore = await cookies();
   const cartToken = await getOrCreateCartToken(cookieStore);
+  setCartCookie(cookieStore, cartToken);
 
   const res = await fetch(
     `https://vercel-swag-store-api.vercel.app/api/cart/${itemId}`,
@@ -127,7 +128,6 @@ export async function removeFromCart(itemId: string) {
   if (!d.success) throw new Error(d.error?.message ?? "Failed to remove item");
 
   d.data = normalizeCart(d.data);
-  setCartCookie(cookieStore, cartToken);
   revalidatePath("/", "layout");
   return d.data;
 }
