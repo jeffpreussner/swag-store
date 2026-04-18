@@ -20,13 +20,13 @@ The following are notes i took throughout the build process, cleaned up and orga
 
 ### General project structure
 
-Using a (marketing) route group to scope the public-facing site layout (header/footer/nav) to just these routes, keeping it isolated from other potential sections (/admin, /account) that would need different chrome. The group doesn't affect URLs.
+The root layout handles global concerns: robots.ts, sitemap.ts global-error.tsx, open graph and twitter image defaults, font loading, global CSS.
 
-I am showing cart count in a server component so it wont update until the cache is invalidated and the client refetches. This is a simple way to show the count without needing to lift state up to a provider or use a client component for the entire layout.
+The marketing route group to scope the public-facing site layout (header/footer/nav) to just these routes, keeping it isolated from other potential sections (/admin, /account) that would need different chrome. The group doesn't affect URLs.
 
-Possible enhancement in the future would be to store cart state in a provider state and update optimistically giving user immediate feedback.
+Each page route has its own loading for instant route level suspense boundary. and a page level error boundary as we may want to handle errors on the product detail page different from the homepage.
 
-Each page route has its own loading for instant route level suspense boundary. and a page level error boundary as we may want to handle errors on the product detail page different from the homepage. The [productSlug] route has its own error.tsx and not-found.tsx because error boundaries in Next.js are scoped to the segment they're defined in. Placing them at the product level means a failed product fetch or missing slug only surfaces a contextual error for that segment — the rest of the marketing layout stays intact. It also allows for product-specific recovery UI rather than a generic app-level error page.
+The [productSlug] route has its own error.tsx and not-found.tsx because error boundaries in Next.js are scoped to the segment they're defined in. Placing them at the product level means a failed product fetch or missing slug only surfaces a contextual error for that segment — the rest of the marketing layout stays intact. It also allows for product-specific recovery UI rather than a generic app-level error page.
 
 ### Homepage
 
@@ -40,7 +40,7 @@ since the homepage is server component we can call the upstream api directly and
 
 I split the FeaturedProducts own server component and wrap it in suspense to allow next stream the response and update. This allows us to instantly load the hero content. Nothing is blocked by the fetches on the page.
 
-# Product detail
+### Product detail
 
 Product data is fetched in a server component so secrets stay on the server.
 
@@ -60,9 +60,40 @@ There are two intentional client boundaries here: the carousel and AddToCartButt
 
 For add-to-cart, I am using server actions for all the cart mutations, add, update, delete. this allows for the same security a backend for frontend proxy would offer but uses nextjs server action mechanism which is a more direct approach than the backend for frontend proxy api would be.
 
+### Cart Page
+
+I needed to get stock to avoid cart errors down the line adding more quantity than available stock.
+
+The cart and stock are both not cached so it made sense to me to combine the fetches, however the N+1 problem was unavoidable with the current stock api endpoint only accepting 1 id per request.
+
+I created a function named addStockAndFormat that does a couple things. It converts all the price data to the correct format and does a adds stock data to the cart item using fetchStock.
+
+The Cart component is added to the cart page with a suspense boundary since its async well need to stream the UI in. I built the CartList as a client boundary. Moving the list to the client allows for optomistic updates of the UI so when you update or delete an item it happens instantly, unless there is an issue and the state reverts.
+
+I set up add, update, and delete server actions in cart.ts to handle the cart mutations.
+
+Each of the actions follow a similar pattern:
+
+- retrieve the cookies with next/headers
+- find the cartToken in the cookieStore or request a new cookie, maxAge set to 1 day
+- set the cookie
+- perform fetch action
+- call revalidatePath
+- return data
+
+### Search Page
+
+The search page follows the same pattern as the homepage and the product detail page, since searchParams is a promise i pass it to the Products and ProductsPagination components instead of blocking whole page render.
+
+Each component is added in a suspense boundary where it awaits the update independently and the ui streams in.
+
+The URL is the single source of truth for search state. When the user types or filters, SearchFilters calls router.replace() with updated query params. That causes the server components to re-render with fresh searchParams.
+
+The filter state is automatically deeplink-able and shareable — no useState, no lifting state, no context."
+
 # Future enhancements
 
-Make cart token flow retry safe if an error occurs during the token retrieval retry once before
+cart state in a provider and update optimistically giving user immediate feedback for CartBadge.
 
 ## Getting Started
 
