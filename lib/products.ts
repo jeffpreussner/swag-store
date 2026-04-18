@@ -177,6 +177,7 @@ export async function fetchStock(
 
 export async function fetchCart(
   cartToken: string | undefined,
+  stock: boolean = true,
 ): Promise<CartContentsResponse | null> {
   if (!cartToken) return null;
   const res = await fetch(`https://vercel-swag-store-api.vercel.app/api/cart`, {
@@ -197,6 +198,8 @@ export async function fetchCart(
  
   const data = await res.json();
 
-
+  if (!stock) {
+    return data;
+  }
   return await addStockAndFormat(data);
 }

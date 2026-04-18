@@ -92,7 +92,7 @@ export default function MainLayout({
 async function CountBadge() {
   const cookieStore = await cookies();
   const cartToken = cookieStore.get(TOKEN_COOKIE_NAME)?.value;
-  const d = await fetchCart(cartToken);
+  const d = await fetchCart(cartToken, false);
   if (!d?.data?.totalItems) return null;
   return <Badge>{d.data.totalItems}</Badge>;
 }
