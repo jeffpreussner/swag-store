@@ -52,5 +52,7 @@ async function Cart() {
       </div>
     );
 
-  return <CartList initialItems={d.data.items} initialSubtotal={d.data.subtotal} />;
+  return (
+    <CartList initialItems={d.data.items} initialSubtotal={d.data.subtotal} />
+  );
 }

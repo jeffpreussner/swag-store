@@ -157,23 +157,29 @@ export async function fetchStock(
   return data;
 }
 
-  async function addStockAndFormat(data:CartContentsResponse):Promise<CartContentsResponse | null> {
+async function addStockAndFormat(
+  data: CartContentsResponse,
+): Promise<CartContentsResponse | null> {
   if (!data?.data) return null;
-   return {
-      ...data,
-      data: {
-        ...(normalizeField(data.data, "subtotal") as NonNullable<CartContentsResponse['data']> ),
-        items: await Promise.all(data.data.items.map(async (item: CartItem) => {
+  return {
+    ...data,
+    data: {
+      ...(normalizeField(data.data, "subtotal") as NonNullable<
+        CartContentsResponse["data"]
+      >),
+      items: await Promise.all(
+        data.data.items.map(async (item: CartItem) => {
           const stockData = await fetchStock(item.product.slug);
           return {
             ...(normalizeField(item, "lineTotal") as CartItem),
             stock: stockData?.data.stock || 0,
-            product: normalizeField(item.product, "price") as Product
+            product: normalizeField(item.product, "price") as Product,
           };
-        }))
-      }
-    }
-  }
+        }),
+      ),
+    },
+  };
+}
 
 export async function fetchCart(
   cartToken: string | undefined,
@@ -186,7 +192,6 @@ export async function fetchCart(
       "x-cart-token": cartToken || "",
     },
   });
-  
 
   if (res.status === 404) {
     return null;
@@ -195,7 +200,7 @@ export async function fetchCart(
   if (!res.ok) {
     throw new Error(`Failed to fetch cart: ${res.status} ${res.statusText}`);
   }
- 
+
   const data = await res.json();
 
   if (!stock) {
