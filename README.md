@@ -28,43 +28,64 @@ Each page route has its own loading for instant route level suspense boundary. a
 
 The [productSlug] route has its own error.tsx and not-found.tsx because error boundaries in Next.js are scoped to the segment they're defined in. Placing them at the product level means a failed product fetch or missing slug only surfaces a contextual error for that segment — the rest of the marketing layout stays intact. It also allows for product-specific recovery UI rather than a generic app-level error page.
 
+### Component Caching
+
+I used 'use cache' on all of the products.ts data-fetching functions which tells Next.js to cache the results. Product/promo/category cacheLife is set to "days" as this is authored content and wont change often.
+
+I added cacheTag even though we aren't currently using it, in a real-world scenario we would be calling revalidateTag from a webhook when product updates in CMS. using revalidateTag allows next to bust cache selectively leaving unrelated items cached.
+
+I am not caching stock or cart data since its user specific and needs to be fresh, more on that in the cart section.
+
+When two levels of cache are used in one route the route uses the shorter cache which could lead to poor performance and unexpected issues.
+
+### Performance considerations
+
+Next/font is used for webfonts with adjustFontFallback and display: swap to minimize CLS
+the fonts are exposed via CSS variable so I can use them in tailwind.
+
+Hero image on homepage uses next/image with priority fetchPriority and loading set to eager, I wanted to avoid risk of poor LCP. I also set an aspect ratio on the hero to avoid CLS. I am also using sizes so the image tag will add srcsets with the appropriate widths and i am adding placeholders on all images.
+
+I added generateStaticParams for dynamic Product page routes, so they are served from edge cache.
+
+I tested performance with web vitals and @vercel/speed-insights
+
 ### Homepage
 
-For the homepage data I chose to go with two parallel promises, since the components are in two different areas of the page, it make sense to go with this pattern over a promise all. both fetches start at the same time and render to their independent suspense boundaries asap.
+For the homepage data I chose to go with two parallel promises, since the components are in two different areas of the page, it makes sense to go with this pattern over a promise all. both fetches start at the same time and render to their independent suspense boundaries asap.
 
 Image on the homepage uses a blur placeholder because we get that for free with static images and helps with perceived loading.
 
 #### Featured Products
 
-since the homepage is server component we can call the upstream api directly and not worry about exposing our secret. I chose to use the "use cache" directive and set the cacheLife to "days" I figured this list would be manually curated and not need to change frequently.
+since the homepage is server component, we can call the upstream directly and not worry about exposing our secret. I chose to use the "use cache" directive and set the cacheLife to "days" I figured this list would be manually curated and not need to change frequently.
 
 I split the FeaturedProducts own server component and wrap it in suspense to allow next stream the response and update. This allows us to instantly load the hero content. Nothing is blocked by the fetches on the page.
 
 ### Product detail
 
-Product data is fetched in a server component so secrets stay on the server.
+Product data is fetched in a server component, so secrets stay on the server.
 
-using a meta title and description to the products landing page as well as generateMetadata function to the product detail page so we can load product info and image into og data.
+using a meta title and description to the products landing page as well as generateMetadata function to the product detail page so we can load product info and image into open graph data.
 
 I added generateStaticParams to the page that loops through the available products and creates static pages for the dynamic routes at build time. So instead of rendering ProductDetailPage for every productSlug on demand at runtime they are statically generated.
 
 I moved async work into a nested component and wrapped it with Suspense, which lets the shell render first and stream data in instead of blocking the whole route.
 
-I was using a promise all combining stock and product fetches but I noticed I had an issue with the cache of the product detail pages being set to 1 minute, this is because my stock fetch was cached at 1 minute to keep things fresh avoid possible stock related errors at checkout.
+I was using a promise all combining stock and product fetches, but I noticed I had an issue with the cache of the product detail pages being set to 1 minute, this is because my stock fetch was cached at 1 minute to keep things fresh avoid possible stock related errors at checkout.
 
-I obviously wanted a long time to live on my product pages for performance so the 1 minute i had set for stock was not going to work. In order to fix this I separated the fetches to two parallel fetches, and i removed the cache on the stock all together, what this does is, allows my product data to load instantly while my add to add to cart UI streams in, and there is no risk of stale stock. and we aren't slowing the product detail fetch down with an uncached fetch.
+I obviously wanted a long time to live on my product pages for performance so the 1 minute I had set for stock was not going to work. To fix this I separated the fetches to two parallel fetches, and I removed the cache on the stock all together, what this does is, allows my product data to load instantly while my add to add to cart UI streams in, and there is no risk of stale stock. and we aren't slowing the product detail fetch down with an uncached fetch.
 
 I added a carousel in case there are more than 1 image (product images is an array) and I made the first image in the carousel priority
 
 There are two intentional client boundaries here: the carousel and AddToCartButton. Everything else stays server-rendered to keep hydration focused and lightweight.
 
-For add-to-cart, I am using server actions for all the cart mutations, add, update, delete. this allows for the same security a backend for frontend proxy would offer but uses nextjs server action mechanism which is a more direct approach than the backend for frontend proxy api would be.
+For add-to-cart, I am using server actions for all the cart mutations, add, update, delete. this allows for the same security a backend for frontend proxy would offer but uses Next.js server action mechanism which is a more direct approach than the backend for frontend proxy API would be.
 
 ### Cart Page
 
 I needed to get stock to avoid cart errors down the line adding more quantity than available stock.
 
-The cart and stock are both not cached so it made sense to me to combine the fetches, however the N+1 problem was unavoidable with the current stock api endpoint only accepting 1 id per request.
+The cart and stock are both not cached so it made sense to me to combine the fetches, however the N+1 problem was unavoidable with the current stock API endpoint only accepting 1 id per request.
 
 I created a function named addStockAndFormat that does a couple things. It converts all the price data to the correct format and does a adds stock data to the cart item using fetchStock.
 
@@ -91,9 +112,12 @@ The URL is the single source of truth for search state. When the user types or f
 
 The filter state is automatically deeplink-able and shareable — no useState, no lifting state, no context."
 
-# Future enhancements
+# Future enhancements	
 
 cart state in a provider and update optimistically giving user immediate feedback for CartBadge.
+
+Consider using less suspense to make the site load more content with javascript turned off.
+
 
 ## Getting Started
 
