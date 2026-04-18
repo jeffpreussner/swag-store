@@ -44,20 +44,6 @@ async function Cart() {
   const cookieStore = await cookies();
   const cartToken = cookieStore.get(TOKEN_COOKIE_NAME)?.value;
   const d = await fetchCart(cartToken);
-  let items: CartItem[] = [];
-
-  // adding stock data to items to enforce max quantity,
-  // should probably be handled upstream in the future.
-  // we cache the stock data there is no cache on cart.
-
-  if (d?.data?.items && d.data.items.length > 0) {
-    items = await Promise.all(
-      d?.data?.items.map(async (item: CartItem) => ({
-        ...item,
-        stock: (await fetchStock(item.product.slug))?.data.stock,
-      })),
-    );
-  }
 
   if (!d?.data?.totalItems || d.data.totalItems === 0)
     return (
@@ -66,5 +52,5 @@ async function Cart() {
       </div>
     );
 
-  return <CartList initialItems={items} initialSubtotal={d.data.subtotal} />;
+  return <CartList initialItems={d.data.items} initialSubtotal={d.data.subtotal} />;
 }
