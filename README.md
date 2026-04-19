@@ -1,6 +1,6 @@
 # Vercel Partner Certification: Swag Store
 
-This repository holds the code from the Vercel Cohort 2 Swag Store assignment
+This repository holds the code from the Vercel Cohort 2 Swag Store assignment.
 
 ## AI Disclosure
 
@@ -14,7 +14,7 @@ tailwind
 
 ## Notes
 
-The following are notes i took throughout the build process, cleaned up and organized
+The following are notes I took throughout the build process, cleaned up and organized.
 
 ## Architectural decisions and foundations in practice
 
@@ -24,62 +24,67 @@ The root layout handles global concerns: robots.ts, sitemap.ts global-error.tsx,
 
 The marketing route group to scope the public-facing site layout (header/footer/nav) to just these routes, keeping it isolated from other potential sections (/admin, /account) that would need different chrome. The group doesn't affect URLs.
 
-Each page route has its own loading for instant route level suspense boundary. and a page level error boundary as we may want to handle errors on the product detail page different from the homepage.
+All data fetching runs in server components; API keys never reach the client.
 
-The [productSlug] route has its own error.tsx and not-found.tsx because error boundaries in Next.js are scoped to the segment they're defined in. Placing them at the product level means a failed product fetch or missing slug only surfaces a contextual error for that segment — the rest of the marketing layout stays intact. It also allows for product-specific recovery UI rather than a generic app-level error page.
+Each page route has a loading.tsx file, providing an instant route level Suspense Boundary, and an error.tsx file allowing us to provide a custom Error Boundary per route because Error Boundaries in Next.js are scoped to the segment they are defined in, so an error in a specific route with an Error Boundary wont effect the rest of the marketing layout. If there is a route without an Error Boundary the error will bubble up to the next Error Boundary.
+
+The dynamic [productSlug] route not-found.tsx because I handle missing products a bit different other missing pages.
+
+the getProductPages function in sitemap.ts fetches all of the product routes so we can add them to the sitemap.
 
 ### Component Caching
 
-I used 'use cache' on all of the products.ts data-fetching functions which tells Next.js to cache the results. Product/promo/category cacheLife is set to "days" as this is authored content and wont change often.
+I used 'use cache' on all the products.ts data-fetching functions which tells Next.js to cache the results. Product/promo/category cacheLife is set to "days" as this is authored content and won’t change often.
 
-I added cacheTag even though we aren't currently using it, in a real-world scenario we would be calling revalidateTag from a webhook when product updates in CMS. using revalidateTag allows next to bust cache selectively leaving unrelated items cached.
+I added cacheTag even though we aren't currently using it, in a real-world scenario we would be calling revalidateTag from a webhook when product updates in CMS. Using revalidateTag allows next to bust cache selectively leaving unrelated items cached.
+
+I call revalidatePath in the Cart actions with 'layout' scope so Next.js will re-render the layout without busting unrelated caches.
 
 I am not caching stock or cart data since its user specific and needs to be fresh, more on that in the cart section.
 
-When two levels of cache are used in one route the route uses the shorter cache which could lead to poor performance and unexpected issues.
+When two levels of cache are used in one route, the route uses the shorter cache which could lead to poor performance and unexpected issues.
 
 ### Performance considerations
 
-Next/font is used for webfonts with adjustFontFallback and display: swap to minimize CLS
-the fonts are exposed via CSS variable so I can use them in tailwind.
+Next/font is used for webfonts with adjustFontFallback and display: swap to minimize CLS.
 
-Hero image on homepage uses next/image with priority fetchPriority and loading set to eager, I wanted to avoid risk of poor LCP. I also set an aspect ratio on the hero to avoid CLS. I am also using sizes so the image tag will add srcsets with the appropriate widths and i am adding placeholders on all images.
+The fonts are exposed via CSS variable so I can use them in tailwind.
 
-I added generateStaticParams for dynamic Product page routes, so they are served from edge cache.
+Hero image on homepage uses next/image with priority fetchPriority and loading set to eager, I wanted to avoid risk of poor LCP. I also set an aspect ratio on the hero to avoid CLS. I am also using sizes so the image tag will add srcsets with the appropriate widths and I am adding placeholders on all images.
+
+Product detail pages are pre-rendered at build time (more on this in Product Detail)
 
 I tested performance with web vitals and @vercel/speed-insights
 
 ### Homepage
 
-For the homepage data I chose to go with two parallel promises, since the components are in two different areas of the page, it makes sense to go with this pattern over a promise all. both fetches start at the same time and render to their independent suspense boundaries asap.
+For the homepage data I chose to go with two parallel Promises, since the components are in two different areas of the page, it makes sense to go with this pattern over a Promise.all. Both fetches start at the same time and render to their independent Suspense Boundaries ASAP.
 
 Image on the homepage uses a blur placeholder because we get that for free with static images and helps with perceived loading.
 
 #### Featured Products
 
-since the homepage is server component, we can call the upstream directly and not worry about exposing our secret. I chose to use the "use cache" directive and set the cacheLife to "days" I figured this list would be manually curated and not need to change frequently.
+Featured products are cached with cacheLife('days') since authored content doesn't change often.
 
-I split the FeaturedProducts own server component and wrap it in suspense to allow next stream the response and update. This allows us to instantly load the hero content. Nothing is blocked by the fetches on the page.
+I split the FeaturedProducts own server component and wrap it in Suspense to allow next stream the response and update. This allows us to instantly load the hero content. Nothing is blocked by the fetches on the page.
 
-### Product detail
+### Product Detail
 
-Product data is fetched in a server component, so secrets stay on the server.
-
-using a meta title and description to the products landing page as well as generateMetadata function to the product detail page so we can load product info and image into open graph data.
+I am using generateMetadata to add per product OG title, description and images. Params is a Promise, so it's awaited inside generateMetadata and ProductDetails rather than page level to allow page shell to render immediately.
 
 I added generateStaticParams to the page that loops through the available products and creates static pages for the dynamic routes at build time. So instead of rendering ProductDetailPage for every productSlug on demand at runtime they are statically generated.
 
-I moved async work into a nested component and wrapped it with Suspense, which lets the shell render first and stream data in instead of blocking the whole route.
+Follows the same Suspense streaming pattern as the homepage.
 
-I was using a promise all combining stock and product fetches, but I noticed I had an issue with the cache of the product detail pages being set to 1 minute, this is because my stock fetch was cached at 1 minute to keep things fresh avoid possible stock related errors at checkout.
+I was using a Promise.all combining stock and product fetches, but I noticed I had an issue with the cache of the product detail pages being set to 1 minute, this is because my fetchStock function was cached and cacheLife was "minutes".
 
-I obviously wanted a long time to live on my product pages for performance so the 1 minute I had set for stock was not going to work. To fix this I separated the fetches to two parallel fetches, and I removed the cache on the stock all together, what this does is, allows my product data to load instantly while my add to add to cart UI streams in, and there is no risk of stale stock. and we aren't slowing the product detail fetch down with an uncached fetch.
+To keep product pages highly cacheable, I split product and stock into parallel fetches and removed caching from stock entirely. This lets product data load instantly while the add‑to‑cart UI streams in, avoids stale stock, and prevents uncached requests from slowing the page.
 
 I added a carousel in case there are more than 1 image (product images is an array) and I made the first image in the carousel priority
 
-There are two intentional client boundaries here: the carousel and AddToCartButton. Everything else stays server-rendered to keep hydration focused and lightweight.
+There are two intentional Client Boundaries here: the carousel and AddToCartButton. Everything else stays server-rendered to keep hydration focused and lightweight.
 
-For add-to-cart, I am using server actions for all the cart mutations, add, update, delete. this allows for the same security a backend for frontend proxy would offer but uses Next.js server action mechanism which is a more direct approach than the backend for frontend proxy API would be.
+For add-to-cart I am using the useActionState hook to submit the form data to the server action, it simplifies the form submission flow and has a handy pending state. 
 
 ### Cart Page
 
@@ -89,7 +94,7 @@ The cart and stock are both not cached so it made sense to me to combine the fet
 
 I created a function named addStockAndFormat that does a couple things. It converts all the price data to the correct format and does a adds stock data to the cart item using fetchStock.
 
-The Cart component is added to the cart page with a suspense boundary since its async well need to stream the UI in. I built the CartList as a client boundary. Moving the list to the client allows for optomistic updates of the UI so when you update or delete an item it happens instantly, unless there is an issue and the state reverts.
+The Cart component is added to the cart page with a Suspense Boundary since its async well need to stream the UI in. I built the CartList as a Client Boundary. Moving the list to the client allows for optimistic updates of the UI so when you update or delete an item it happens instantly, unless there is an issue and the state reverts. Using useTransition here marks the state update as non-urgent, allowing the UI to remain responsive.
 
 I set up add, update, and delete server actions in cart.ts to handle the cart mutations.
 
@@ -104,20 +109,17 @@ Each of the actions follow a similar pattern:
 
 ### Search Page
 
-The search page follows the same pattern as the homepage and the product detail page, since searchParams is a promise i pass it to the Products and ProductsPagination components instead of blocking whole page render.
-
-Each component is added in a suspense boundary where it awaits the update independently and the ui streams in.
+The search page follows the same pattern as the homepage and the product detail page, since searchParams is a Promise I pass it to the Products and ProductsPagination components instead of blocking whole page render.
 
 The URL is the single source of truth for search state. When the user types or filters, SearchFilters calls router.replace() with updated query params. That causes the server components to re-render with fresh searchParams.
 
 The filter state is automatically deeplink-able and shareable — no useState, no lifting state, no context."
 
-# Future enhancements	
+# Future enhancements   
 
-cart state in a provider and update optimistically giving user immediate feedback for CartBadge.
+Cart state in a provider and update optimistically giving user immediate feedback for CartBadge.
 
-Consider using less suspense to make the site load more content with javascript turned off.
-
+Consider using less Suspense to make the site load more content with javascript turned off.
 
 ## Getting Started
 
@@ -134,3 +136,4 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
