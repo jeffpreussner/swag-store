@@ -49,10 +49,11 @@ export function CartItemRow({
 
   function handleRemove() {
     setRemoved(true);
-    if (onSubTotalChange) {
-      onSubTotalChange(-cartItem.lineTotal);
-    }
+
     startRemove(async () => {
+      if (onSubTotalChange) {
+        onSubTotalChange(-cartItem.lineTotal);
+      }
       try {
         await removeFromCart(cartItem.productId);
         toast.success("item(s) removed from cart.");
