@@ -116,7 +116,7 @@ async function ProductDetails({
         {/* only load carousel if more than 2 images */}
         {data.images && data.images.length < 2 && (
           <Image
-            priority={true}
+            preload
             fetchPriority="high"
             loading="eager"
             src={data.images[0]}
@@ -124,7 +124,7 @@ async function ProductDetails({
             width={400}
             height={400}
             quality={50}
-            sizes="100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 100vw"
             placeholder="blur"
             blurDataURL={placeholder(400, 400)}
           />
@@ -136,7 +136,7 @@ async function ProductDetails({
                 <CarouselItem key={`product-detail-image-${i}`}>
                   {/* only prioritize the first image */}
                   <Image
-                    priority={i === 0}
+                    preload={i === 0}
                     fetchPriority={i === 0 ? "high" : "auto"}
                     loading={i === 0 ? "eager" : "lazy"}
                     src={imgSrc}
@@ -144,7 +144,7 @@ async function ProductDetails({
                     width={400}
                     height={400}
                     quality={50}
-                    sizes="100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 100vw"
                     placeholder="blur"
                     blurDataURL={placeholder(400, 400)}
                   />

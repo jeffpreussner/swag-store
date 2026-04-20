@@ -46,7 +46,7 @@ When two levels of cache are used in one route, the route uses the shorter cache
 
 The fonts are exposed via CSS variable so I can use them in Tailwind.
 
-Hero image on the homepage uses `next/image` with priority `fetchPriority` and `loading` set to `eager`, I wanted to avoid risk of poor LCP. I also set an aspect ratio on the hero to avoid CLS. I am also using sizes so the image tag will add srcsets with the appropriate widths and I am adding placeholders on all images.
+Hero image on the homepage uses `next/image` with `preload` `fetchPriority` and `loading` set to `eager`, I wanted to avoid risk of poor LCP. I also set an aspect ratio on the hero to avoid CLS. I am also using sizes so the image tag will add srcsets with the appropriate widths and I am adding placeholders on all images.
 
 Product detail pages are pre-rendered at build time (more on this in Product Detail).
 
@@ -76,7 +76,7 @@ I was using a `Promise.all` combining stock and product fetches, but I noticed I
 
 To keep product pages highly cacheable, I split product and stock into parallel fetches and removed caching from stock entirely. This lets product data load instantly while the add‑to‑cart UI streams in, avoids stale stock, and prevents uncached requests from slowing the page.
 
-I added a carousel in case there are more than 1 image (`product.images` is an array) and I made the first image in the carousel `priority`. Possible enhancement here would be only loading the carousel if there is more that 1 image.
+I added a carousel in case there are more than 1 image (`product.images` is an array) and I made the first image in the carousel `preload`. Possible enhancement here would be only loading the carousel if there is more that 1 image.
 
 There are two intentional Client Boundaries on the `ProductDetailPage`: the `Carousel` and `AddToCartButton`. Everything else stays server-rendered to keep hydration focused and lightweight.
 

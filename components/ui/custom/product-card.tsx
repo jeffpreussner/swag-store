@@ -19,6 +19,7 @@ export function ProductCard({ product }: { product: Product }) {
         className="mx-auto"
         placeholder="blur"
         blurDataURL={placeholder(300, 300)}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
       />
       <h3 className="text-xl font-bold mt-4">{product.name}</h3>
       <p className="mt-2">{product.description}</p>

@@ -1,13 +1,13 @@
 import Link from "next/link";
-import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { Suspense } from "react";
 import { fetchProducts, fetchActivePromo } from "@/lib/products";
 import { Product } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Metadata } from "next";
-import heroImg from "@/public/img/1200x400-grayscale.jpg";
+
 import { ProductCard } from "@/components/ui/custom/product-card";
+import { ArtDirection } from "@/components/ui/custom/art-direction";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 export default async function MarketingPage() {
   const promoPromise = fetchActivePromo();
   const featuredPromise = fetchProducts(true);
+
 
   return (
     <div>
@@ -38,20 +39,8 @@ export default async function MarketingPage() {
             Browse Products
           </Link>
         </div>
-        <div className="bg-gray-800 aspect-[3/1] mt-6 mx-auto w-full max-w-5xl">
-          <Image
-            priority={true}
-            fetchPriority="high"
-            loading="eager"
-            src={heroImg}
-            alt="Store Hero Image"
-            width={1200}
-            height={400}
-            className="aspect-[3/1]"
-            placeholder="blur"
-            quality={50}
-            sizes="100vw"
-          />
+        <div className="bg-gray-800 aspect-1 md:aspect-3/1 mt-6 mx-auto w-full max-w-5xl">
+        <ArtDirection />
         </div>
       </div>
       <div className="max-w-5xl mx-auto py-10 px-4">
