@@ -4,6 +4,21 @@ import { cookies } from "next/headers";
 import { ONE_DAY_IN_SECONDS, TOKEN_COOKIE_NAME } from "@/lib/const";
 import { CartContentsResponse, CartItem } from "@/lib/types";
 import { normalizeField } from "@/lib/products";
+import { z } from "zod";
+
+const addToCartSchema = z.object({
+  productId: z.string().min(1),
+  quantity: z.number().int().gte(1).lte(999),
+});
+
+const updateCartSchema = z.object({
+  itemId: z.string().min(1),
+  quantity: z.number().int().gte(1).lte(999),
+});
+
+const removeFromCartSchema = z.object({
+  itemId: z.string().min(1),
+});
 
 async function getOrCreateCartToken(
   cookieStore: Awaited<ReturnType<typeof cookies>>,
@@ -59,75 +74,97 @@ function setCartCookie(
 }
 
 export async function addToCart(productId: string, quantity: number) {
-  const cookieStore = await cookies();
-  const cartToken = await getOrCreateCartToken(cookieStore);
-  setCartCookie(cookieStore, cartToken);
+  try {
+    addToCartSchema.parse({ productId, quantity });
+    const cookieStore = await cookies();
+    const cartToken = await getOrCreateCartToken(cookieStore);
+    setCartCookie(cookieStore, cartToken);
 
-  const res = await fetch("https://vercel-swag-store-api.vercel.app/api/cart", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-cart-token": cartToken,
-      "x-vercel-protection-bypass": process.env.SWAG_STORE_API_KEY || "",
-    },
-    body: JSON.stringify({ productId, quantity }),
-  });
+    const res = await fetch(
+      "https://vercel-swag-store-api.vercel.app/api/cart",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-cart-token": cartToken,
+          "x-vercel-protection-bypass": process.env.SWAG_STORE_API_KEY || "",
+        },
+        body: JSON.stringify({ productId, quantity }),
+      },
+    );
 
-  const d = await res.json();
-  if (!d.success) throw new Error(d.error?.message ?? "Failed to add to cart");
+    const d = await res.json();
+    if (!d.success)
+      throw new Error(d.error?.message ?? "Failed to add to cart");
 
-  d.data = normalizeCart(d.data);
-  revalidatePath("/", "layout");
-  return d.data;
+    d.data = normalizeCart(d.data);
+    revalidatePath("/", "layout");
+    return d.data;
+  } catch (error) {
+    if (error instanceof Error) throw error;
+    throw new Error("An unexpected error occurred");
+  }
 }
-
 export async function updateCartItem(itemId: string, quantity: number) {
-  const cookieStore = await cookies();
-  const cartToken = await getOrCreateCartToken(cookieStore);
-  setCartCookie(cookieStore, cartToken);
+  try {
+    updateCartSchema.parse({ itemId, quantity });
+    const cookieStore = await cookies();
+    const cartToken = await getOrCreateCartToken(cookieStore);
+    setCartCookie(cookieStore, cartToken);
 
-  const res = await fetch(
-    `https://vercel-swag-store-api.vercel.app/api/cart/${itemId}`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "x-cart-token": cartToken,
-        "x-vercel-protection-bypass": process.env.SWAG_STORE_API_KEY || "",
+    const res = await fetch(
+      `https://vercel-swag-store-api.vercel.app/api/cart/${itemId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-cart-token": cartToken,
+          "x-vercel-protection-bypass": process.env.SWAG_STORE_API_KEY || "",
+        },
+        body: JSON.stringify({ quantity }),
       },
-      body: JSON.stringify({ quantity }),
-    },
-  );
+    );
 
-  const d = await res.json();
-  if (!d.success) throw new Error(d.error?.message || "Failed to update cart");
+    const d = await res.json();
+    if (!d.success)
+      throw new Error(d.error?.message || "Failed to update cart");
 
-  d.data = normalizeCart(d.data);
-  revalidatePath("/", "layout");
-  return d.data;
+    d.data = normalizeCart(d.data);
+    revalidatePath("/", "layout");
+    return d.data;
+  } catch (error) {
+    if (error instanceof Error) throw error;
+    throw new Error("An unexpected error occurred");
+  }
 }
-
 export async function removeFromCart(itemId: string) {
-  const cookieStore = await cookies();
-  const cartToken = await getOrCreateCartToken(cookieStore);
-  setCartCookie(cookieStore, cartToken);
+  try {
+    removeFromCartSchema.parse({ itemId });
+    const cookieStore = await cookies();
+    const cartToken = await getOrCreateCartToken(cookieStore);
+    setCartCookie(cookieStore, cartToken);
 
-  const res = await fetch(
-    `https://vercel-swag-store-api.vercel.app/api/cart/${itemId}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "x-cart-token": cartToken,
-        "x-vercel-protection-bypass": process.env.SWAG_STORE_API_KEY || "",
+    const res = await fetch(
+      `https://vercel-swag-store-api.vercel.app/api/cart/${itemId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "x-cart-token": cartToken,
+          "x-vercel-protection-bypass": process.env.SWAG_STORE_API_KEY || "",
+        },
       },
-    },
-  );
+    );
 
-  const d = await res.json();
-  if (!d.success) throw new Error(d.error?.message ?? "Failed to remove item");
+    const d = await res.json();
+    if (!d.success)
+      throw new Error(d.error?.message ?? "Failed to remove item");
 
-  d.data = normalizeCart(d.data);
-  revalidatePath("/", "layout");
-  return d.data;
+    d.data = normalizeCart(d.data);
+    revalidatePath("/", "layout");
+    return d.data;
+  } catch (error) {
+    if (error instanceof Error) throw error;
+    throw new Error("An unexpected error occurred");
+  }
 }
