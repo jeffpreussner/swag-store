@@ -46,7 +46,7 @@ When two levels of cache are used in one route, the route uses the shorter cache
 
 The fonts are exposed via CSS variable so I can use them in Tailwind.
 
-Hero image on the homepage uses `next/image` with `preload` `fetchPriority` and `loading` set to `eager`, I wanted to avoid risk of poor LCP. I also set an aspect ratio on the hero to avoid CLS. I am also using sizes so the image tag will add srcsets with the appropriate widths and I am adding placeholders on all images.
+ `ArtDirection` component on the homepage is a picture element using with different sources to display an image at specific aspect ratios for mobile and desktop. image is set to be full width and height of container and has an aspect ratio applied to container. All this is done to avoid CLS during a long load. The fallback image still uses `getImageProps` `fetchPriority` and `loading` set to `eager`.
 
 Product detail pages are pre-rendered at build time (more on this in Product Detail).
 
