@@ -20,11 +20,19 @@ import { ChevronLeft } from "lucide-react";
 import { placeholder } from "@/lib/placeholder";
 import { formattedPrice } from "@/lib/format-price";
 
+ 
 export async function generateStaticParams() {
-  const d = await fetchProducts(false);
-  return (d?.data ?? []).map((product) => ({
-    productSlug: product.slug,
-  }));
+  const [allProducts, featuredProducts] = await Promise.all([
+    fetchProducts(false),
+    fetchProducts(true),
+  ]);
+
+  const slugs = new Set([
+    ...(allProducts?.data ?? []).map((p) => p.slug),
+    ...(featuredProducts?.data ?? []).map((p) => p.slug),
+  ]);
+
+  return Array.from(slugs).map((slug) => ({ productSlug: slug }));
 }
 
 export async function generateMetadata(props: {
