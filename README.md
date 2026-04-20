@@ -46,7 +46,7 @@ When two levels of cache are used in one route, the route uses the shorter cache
 
 The fonts are exposed via CSS variable so I can use them in Tailwind.
 
- `ArtDirection` component on the homepage is a picture element using with different sources to display an image at specific aspect ratios for mobile and desktop. The image the full width and height of container and the container has an aspect ratio set as well. All this is done to avoid CLS during a long load. The fallback image still uses `getImageProps` `fetchPriority` and `loading` set to `eager`.
+`ArtDirection` component on the homepage is a picture element using with different sources to display an image at specific aspect ratios for mobile and desktop. The image the full width and height of container and the container has an aspect ratio set as well. All this is done to avoid CLS during a long load. The fallback image still uses `getImageProps` `fetchPriority` and `loading` set to `eager`.
 
 Product detail pages are pre-rendered at build time (more on this in Product Detail).
 
@@ -80,7 +80,7 @@ I added a carousel in case there are more than 1 image (`product.images` is an a
 
 There are two intentional Client Boundaries on the `ProductDetailPage`: the `Carousel` and `AddToCartButton`. Everything else stays server-rendered to keep hydration focused and lightweight.
 
-In the `AddToCartButton` I am using the `useActionState` hook to submit the form data to the server action it simplifies the form submission flow and has a handy pending state. 
+In the `AddToCartButton` I am using the `useActionState` hook to submit the form data to the server action it simplifies the form submission flow and has a handy pending state.
 
 ### Cart Page
 
@@ -111,7 +111,7 @@ The URL is the single source of truth for search state. When the user types or f
 
 The search state is automatically deeplink-able and shareable.
 
-# Future enhancements   
+# Future enhancements
 
 Cart state in a provider and update optimistically giving user immediate feedback for `CartBadge`.
 
@@ -132,4 +132,3 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-

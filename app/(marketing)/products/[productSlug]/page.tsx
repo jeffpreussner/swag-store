@@ -20,7 +20,6 @@ import { ChevronLeft } from "lucide-react";
 import { placeholder } from "@/lib/placeholder";
 import { formattedPrice } from "@/lib/format-price";
 
- 
 export async function generateStaticParams() {
   const [allProducts, featuredProducts] = await Promise.all([
     fetchProducts(false),

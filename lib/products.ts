@@ -28,7 +28,10 @@ export async function fetchProducts(
   cacheTag(featured ? "featured-products" : "products");
   cacheLife("days");
 
-  const qs = queryString.stringify({ ...(featured === true ? { featured: featured }:{}), ...params });
+  const qs = queryString.stringify({
+    ...(featured === true ? { featured: featured } : {}),
+    ...params,
+  });
   const res = await fetch(
     `https://vercel-swag-store-api.vercel.app/api/products?${qs}`,
     {

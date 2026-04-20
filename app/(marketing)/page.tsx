@@ -19,7 +19,6 @@ export default async function MarketingPage() {
   const promoPromise = fetchActivePromo();
   const featuredPromise = fetchProducts(true);
 
-
   return (
     <div>
       <div className="h-20 md:h-10 bg-secondary">
@@ -40,7 +39,7 @@ export default async function MarketingPage() {
           </Link>
         </div>
         <div className="bg-gray-800 aspect-1 md:aspect-3/1 mt-6 mx-auto w-full max-w-5xl">
-        <ArtDirection />
+          <ArtDirection />
         </div>
       </div>
       <div className="max-w-5xl mx-auto py-10 px-4">
