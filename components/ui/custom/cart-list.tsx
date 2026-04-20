@@ -19,7 +19,7 @@ export function CartList({
   );
   return (
     <>
-      <ul>
+      <ul className="grid grid-cols-1 gap-6">
         {initialItems.map((item) => (
           <CartItemRow
             key={item.productId}

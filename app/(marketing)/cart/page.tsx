@@ -22,7 +22,7 @@ export default async function CartPage() {
           {/* broke out FeaturedProducts into its own component so we can suspense it */}
           <Suspense
             fallback={
-              <ul className="grid grid-cols-1 gap-6 mt-10">
+              <ul className="grid grid-cols-1 gap-6">
                 <li>
                   <Skeleton className="h-20 w-full" />
                 </li>
