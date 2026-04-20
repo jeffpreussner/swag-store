@@ -68,7 +68,7 @@ I split the `FeaturedProducts` into a separate component and wrap it in its own 
 
 I am using `generateMetadata` to add per product OG title, description and images. `params` is a Promise, so it's awaited inside `generateMetadata` and `ProductDetails` rather than page level to allow page shell to render immediately.
 
-I added `generateStaticParams` to the page that loops through the available products and creates static pages for the dynamic routes at build time. So instead of rendering `ProductDetailPage` for every `productSlug` on demand at runtime they are statically generated.
+I added `generateStaticParams` to the page that loops through the available products (products,featured products) and creates static pages for the dynamic routes at build time. So instead of rendering `ProductDetailPage` for every `productSlug` on demand at runtime they are statically generated.
 
 Follows the same Suspense streaming pattern as the homepage.
 
