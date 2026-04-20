@@ -46,7 +46,7 @@ When two levels of cache are used in one route, the route uses the shorter cache
 
 The fonts are exposed via CSS variable so I can use them in Tailwind.
 
- `ArtDirection` component on the homepage is a picture element using with different sources to display an image at specific aspect ratios for mobile and desktop. image is set to be full width and height of container and has an aspect ratio applied to container. All this is done to avoid CLS during a long load. The fallback image still uses `getImageProps` `fetchPriority` and `loading` set to `eager`.
+ `ArtDirection` component on the homepage is a picture element using with different sources to display an image at specific aspect ratios for mobile and desktop. The image the full width and height of container and the container has an aspect ratio set as well. All this is done to avoid CLS during a long load. The fallback image still uses `getImageProps` `fetchPriority` and `loading` set to `eager`.
 
 Product detail pages are pre-rendered at build time (more on this in Product Detail).
 
