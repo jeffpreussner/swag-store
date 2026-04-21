@@ -1,19 +1,10 @@
 import type { MetadataRoute } from "next";
-import { fetchProducts } from "@/lib/products";
+import { fetchAllProducts } from "@/lib/products";
 import { Product } from "@/lib/types";
 const baseUrl = process.env.BASE_URL || "https://localhost:3000";
-async function getProductPages() {
-  const allProducts: Product[] = [];
-  let page = 1;
-  let hasNextPage = true;
-  while (hasNextPage) {
-    const d = await fetchProducts(false, { page });
 
-    if (!d?.data) break;
-    allProducts.push(...d.data);
-    hasNextPage = d.meta.pagination.hasNextPage;
-    page++;
-  }
+async function getProductPages() {
+  const allProducts: Product[] = await fetchAllProducts();
 
   return (
     allProducts.map((product: Product) => ({

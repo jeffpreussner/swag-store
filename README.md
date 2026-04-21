@@ -18,6 +18,8 @@ The following are notes I took throughout the build process, cleaned up and orga
 
 The root layout handles global concerns: `robots.ts`, `sitemap.ts`, `global-error.tsx`, open graph and twitter image defaults, font loading, global CSS.
 
+in the `sitemap.tsx` file I call `fetchAllProducts` to add sitemap entries for all products.
+
 The marketing route group to scope the public-facing site layout (header/footer/nav) to just these routes, keeping it isolated from other potential sections (`/admin`, `/account`) that would need different chrome. The group doesn't affect URLs.
 
 All data fetching runs in server components; API keys never reach the client.
@@ -68,7 +70,7 @@ I split the `FeaturedProducts` into a separate component and wrap it in its own 
 
 I am using `generateMetadata` to add per product OG title, description and images. `params` is a Promise, so it's awaited inside `generateMetadata` and `ProductDetails` rather than page level to allow page shell to render immediately.
 
-I added `generateStaticParams` to the page that loops through the available products (products,featured products) and creates static pages for the dynamic routes at build time. So instead of rendering `ProductDetailPage` for every `productSlug` on demand at runtime they are statically generated.
+I added `generateStaticParams` to the page which calls `fetchAllProducts` which returns a list of all available products, I loop through that to creates static pages for the dynamic routes at build time. So instead of rendering `ProductDetailPage` for every `productSlug` on demand at runtime they are statically generated.
 
 Follows the same Suspense streaming pattern as the homepage.
 

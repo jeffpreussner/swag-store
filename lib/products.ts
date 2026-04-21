@@ -20,6 +20,25 @@ export function normalizeField(
   return { ...obj, [key]: (obj[key] as number) / 100 };
 }
 
+export async function fetchAllProducts() {
+  "use cache";
+  cacheTag("all-products");
+  cacheLife("days");
+
+  const allProducts: Product[] = [];
+  let page = 1;
+  let hasNextPage = true;
+  while (hasNextPage) {
+    const d = await fetchProducts(false, { page });
+
+    if (!d?.data) break;
+    allProducts.push(...d.data);
+    hasNextPage = d.meta.pagination.hasNextPage;
+    page++;
+  }
+  return allProducts;
+}
+
 export async function fetchProducts(
   featured: boolean,
   params: SearchParams = {},

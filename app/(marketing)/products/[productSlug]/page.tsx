@@ -2,11 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Suspense } from "react";
-import { fetchProduct, fetchProducts, fetchStock } from "@/lib/products";
+import { fetchAllProducts, fetchProduct, fetchStock } from "@/lib/products";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-
 import {
   Carousel,
   CarouselContent,
@@ -21,17 +20,8 @@ import { placeholder } from "@/lib/placeholder";
 import { formattedPrice } from "@/lib/format-price";
 
 export async function generateStaticParams() {
-  const [allProducts, featuredProducts] = await Promise.all([
-    fetchProducts(false),
-    fetchProducts(true),
-  ]);
-
-  const slugs = new Set([
-    ...(allProducts?.data ?? []).map((p) => p.slug),
-    ...(featuredProducts?.data ?? []).map((p) => p.slug),
-  ]);
-
-  return Array.from(slugs).map((slug) => ({ productSlug: slug }));
+  const allProducts = await fetchAllProducts();
+  return allProducts.map((p) => ({ productSlug: p.slug }));
 }
 
 export async function generateMetadata(props: {
